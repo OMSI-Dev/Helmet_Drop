@@ -1,0 +1,70 @@
+//
+// !!! WARNING !!! AUTO-GENERATED FILE!
+// PLEASE DO NOT MODIFY IT AND USE "platformio.ini":
+// https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags
+//
+{
+    "configurations": [
+        {
+            "name": "PlatformIO",
+            "includePath": [
+                "g:/Shared drives/OMSI Technology Group/2022/DOT/Helmet_Drop/include",
+                "g:/Shared drives/OMSI Technology Group/2022/DOT/Helmet_Drop/src",
+                "g:/Shared drives/OMSI Technology Group/2022/DOT/Helmet_Drop/.pio/libdeps/itsybitsy32u4_5V/Adafruit LSM6DS",
+                "g:/Shared drives/OMSI Technology Group/2022/DOT/Helmet_Drop/.pio/libdeps/itsybitsy32u4_5V/Adafruit BusIO",
+                "C:/Users/Dev/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
+                "C:/Users/Dev/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
+                "g:/Shared drives/OMSI Technology Group/2022/DOT/Helmet_Drop/.pio/libdeps/itsybitsy32u4_5V/Stepper/src",
+                "g:/Shared drives/OMSI Technology Group/2022/DOT/Helmet_Drop/.pio/libdeps/itsybitsy32u4_5V/Adafruit Unified Sensor",
+                "g:/Shared drives/OMSI Technology Group/2022/DOT/Helmet_Drop/.pio/libdeps/itsybitsy32u4_5V/Bounce2/src",
+                "C:/Users/Dev/.platformio/packages/framework-arduino-avr/cores/arduino",
+                "C:/Users/Dev/.platformio/packages/framework-arduino-avr/variants/itsybitsy32u4",
+                "C:/Users/Dev/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
+                "C:/Users/Dev/.platformio/packages/framework-arduino-avr/libraries/HID/src",
+                "C:/Users/Dev/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
+                ""
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "path": [
+                    "g:/Shared drives/OMSI Technology Group/2022/DOT/Helmet_Drop/include",
+                    "g:/Shared drives/OMSI Technology Group/2022/DOT/Helmet_Drop/src",
+                    "g:/Shared drives/OMSI Technology Group/2022/DOT/Helmet_Drop/.pio/libdeps/itsybitsy32u4_5V/Adafruit LSM6DS",
+                    "g:/Shared drives/OMSI Technology Group/2022/DOT/Helmet_Drop/.pio/libdeps/itsybitsy32u4_5V/Adafruit BusIO",
+                    "C:/Users/Dev/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
+                    "C:/Users/Dev/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
+                    "g:/Shared drives/OMSI Technology Group/2022/DOT/Helmet_Drop/.pio/libdeps/itsybitsy32u4_5V/Stepper/src",
+                    "g:/Shared drives/OMSI Technology Group/2022/DOT/Helmet_Drop/.pio/libdeps/itsybitsy32u4_5V/Adafruit Unified Sensor",
+                    "g:/Shared drives/OMSI Technology Group/2022/DOT/Helmet_Drop/.pio/libdeps/itsybitsy32u4_5V/Bounce2/src",
+                    "C:/Users/Dev/.platformio/packages/framework-arduino-avr/cores/arduino",
+                    "C:/Users/Dev/.platformio/packages/framework-arduino-avr/variants/itsybitsy32u4",
+                    "C:/Users/Dev/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
+                    "C:/Users/Dev/.platformio/packages/framework-arduino-avr/libraries/HID/src",
+                    "C:/Users/Dev/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
+                    ""
+                ]
+            },
+            "defines": [
+                "PLATFORMIO=60104",
+                "ARDUINO_AVR_ITSYBITSY32U4_5V",
+                "F_CPU=16000000L",
+                "ARDUINO_ARCH_AVR",
+                "ARDUINO=10808",
+                "USB_VID=0x239A",
+                "USB_PID=0x000E",
+                "USB_PRODUCT=\"ItsyBitsy 32u4 5V 16MHz\"",
+                "USB_MANUFACTURER=\"Adafruit\"",
+                "__AVR_ATmega32U4__",
+                ""
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++11",
+            "compilerPath": "C:/Users/Dev/.platformio/packages/toolchain-atmelavr/bin/avr-gcc.exe",
+            "compilerArgs": [
+                "-mmcu=atmega32u4",
+                ""
+            ]
+        }
+    ],
+    "version": 4
+}
