@@ -197,7 +197,7 @@ Thomas Hudson</text>
 white =&gt; DI
 grn/blk =&gt; GND</text>
 <text x="38.608" y="22.352" size="0.8128" layer="21" ratio="15">BS170</text>
-<text x="27.432" y="56.896" size="1.27" layer="21" ratio="15">IR Sensor Board </text>
+<text x="27.432" y="56.896" size="1.27" layer="21" ratio="15">Module IR Sensor Board </text>
 </plain>
 <libraries>
 <library name="SparkFun-Connectors">

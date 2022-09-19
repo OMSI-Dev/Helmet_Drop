@@ -156,7 +156,6 @@
 </layers>
 <board>
 <plain>
-<text x="55.626" y="58.674" size="1.778" layer="21" ratio="15" rot="R180">OMSI - NASA Altimeter</text>
 <text x="56.388" y="37.338" size="1.27" layer="21" ratio="15">GND</text>
 <wire x1="11.43" y1="57.912" x2="11.43" y2="22.86" width="0.1524" layer="20"/>
 <wire x1="11.43" y1="22.86" x2="13.97" y2="20.32" width="0.1524" layer="20" curve="90"/>
@@ -168,11 +167,11 @@
 <wire x1="13.97" y1="60.452" x2="11.43" y2="57.912" width="0.1524" layer="20" curve="90"/>
 <text x="52.832" y="48.514" size="1.27" layer="21" ratio="15">To IR Sensor</text>
 <text x="23.114" y="40.132" size="1.27" layer="21" ratio="15" rot="R180">DO</text>
-<text x="59.69" y="45.974" size="1.27" layer="21" ratio="15" rot="R180">Power</text>
+<text x="59.69" y="45.974" size="1.27" layer="21" ratio="15" rot="R180">5V</text>
 <text x="40.386" y="46.482" size="1.27" layer="21" ratio="15">5V</text>
 <text x="24.13" y="45.212" size="1.27" layer="21" ratio="15" rot="R180">GND</text>
 <text x="21.336" y="33.782" size="1.27" layer="21" ratio="15">5V</text>
-<text x="22.098" y="50.292" size="1.27" layer="21" ratio="15" rot="R180">To Master</text>
+<text x="22.098" y="50.292" size="1.27" layer="21" ratio="15" rot="R180">To Controller</text>
 <text x="42.418" y="50.292" size="1.27" layer="21" ratio="15" rot="R180">GND</text>
 <text x="14.478" y="33.528" size="1.27" layer="22" ratio="15" rot="MR0">5V</text>
 <text x="11.684" y="45.212" size="1.27" layer="22" ratio="15" rot="MR180">GND</text>
@@ -182,22 +181,23 @@
 <text x="35.052" y="30.226" size="1.27" layer="21" ratio="15">ON when IR is
  interrupted</text>
 <text x="37.084" y="43.688" size="1.27" layer="21" ratio="15">DI/DO</text>
-<text x="50.292" y="38.608" size="0.8128" layer="21" ratio="15" rot="R90">180</text>
+<text x="50.292" y="38.608" size="0.8128" layer="21" ratio="15" rot="R90">100</text>
 <text x="39.878" y="38.1" size="0.8128" layer="21" ratio="15" rot="R90">1000</text>
 <text x="44.958" y="38.608" size="0.8128" layer="21" ratio="15" rot="R90">10k</text>
-<text x="24.892" y="54.356" size="1.27" layer="21" ratio="15">IR Sensor 365-1262-ND</text>
+<text x="27.432" y="53.086" size="1.27" layer="21" ratio="15">IR Sensor OPB732WZ</text>
 <text x="34.798" y="38.1" size="0.8128" layer="21" ratio="15" rot="R90">1000</text>
 <text x="28.956" y="50.8" size="1.27" layer="21" ratio="15">Power</text>
-<text x="30.988" y="23.622" size="1.27" layer="21" ratio="15" rot="R180">7/31/18</text>
+<text x="30.988" y="23.622" size="1.27" layer="21" ratio="15" rot="R180">8/29/22</text>
 <text x="23.368" y="23.622" size="1.27" layer="22" ratio="15" rot="MR180">7/31/18</text>
 <text x="22.606" y="58.674" size="1.778" layer="22" ratio="15" rot="MR180">OMSI - NASA Altimeter
 Thomas Hudson</text>
 <text x="49.022" y="34.036" size="1.27" layer="22" ratio="15" rot="MR0">IR Sensor 365-1262-ND</text>
 <text x="25.908" y="50.8" size="1.27" layer="21" ratio="15">5V</text>
-<text x="54.102" y="30.48" size="1.016" layer="21" ratio="15">red =&gt; power
+<text x="51.562" y="30.48" size="1.016" layer="21" ratio="15">red =&gt; power
 white =&gt; DI
 grn/blk =&gt; GND</text>
 <text x="38.608" y="22.352" size="0.8128" layer="21" ratio="15">BS170</text>
+<text x="27.432" y="56.896" size="1.27" layer="21" ratio="15">IR Sensor Board </text>
 </plain>
 <libraries>
 <library name="SparkFun-Connectors">
