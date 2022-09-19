@@ -22,36 +22,45 @@ resources:Helmet_Drop BOM.xls
 some other directories are used by platformio and vscode
 
 #### Hardware
+
 **Phoenix connectors:**
 
 2-pin: (4 qty)
+
 	1. 24V
 	2. Safety Switch
 	3. Accel Sensor (1 pair)
+	
 3-pin: (3 qty)
+
 	1. IR In
 	2. Reed In
 	3. 12v In
+	
 4-pin: (2 qty)
+
 	1. 	Stepper Motor
 	2. 	Maglock
+	
 6-pin: (1 qty)
+
 	1. 	Lock Light
 	2. 	Unlock Light
-3 mosfets (SMD 7460AAW44K)
-3 10K SMS Resistors
-32U4 - 5v itsyBitsy
 
-Stepper Motor
-Stepper Driver
-IR Sensor (CPB765WZ)
-Happ Switch
-Reed Switch
-Maglock
+Various Components:
 
-24V PSU
-12V PSU
-5V across USB
+	3 mosfets (SMD 7460AAW44K)
+	3 10K SMS Resistors
+	32U4 - 5v itsyBitsy
+	Stepper Motor
+	Stepper Driver
+	IR Sensor (CPB765WZ)
+	Happ Switch
+	Reed Switch
+	Maglock
+	24V PSU
+	12V PSU
+	5V across USB
 
 #### Sensor Board
 IR sensor board - used to set IR with resistors as well as a troubleshooting board.
@@ -62,9 +71,9 @@ Capitalization matters.
 
 ##### Naming scheme:
 
-Failure: red.mp3
-Average: orange.mp3
-Success: green.mp3
+	Failure: red.mp3
+	Average: orange.mp3
+	Success: green.mp3
 
 ## Images/video
 
@@ -73,12 +82,10 @@ The images are saved as PNG and the video is MP4, both are stored /data/images. 
 
 ##### Naming scheme:
 
-Arrow Failure: redArrow.png
-Arrow Average: yellowArrow.mp3
-Arrow Success: greenArrow.mp3
-
-Head Failure: 3_en.png
-Head Average:  2_en.png
-Head Success:  1_en.png
-
-Video: attractor.mp4
+	Arrow Failure: redArrow.png
+	Arrow Average: yellowArrow.mp3
+	Arrow Success: greenArrow.mp3
+	Head Failure: 3_en.png
+	Head Average:  2_en.png
+	Head Success:  1_en.png
+	Video: attractor.mp4
