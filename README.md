@@ -39,13 +39,13 @@ some other directories are used by platformio and vscode
 	
 4-pin: (2 qty)
 
-	1. 	Stepper Motor
-	2. 	Maglock
+	1. Stepper Motor
+	2. Maglock
 	
 6-pin: (1 qty)
 
-	1. 	Lock Light
-	2. 	Unlock Light
+	1.Lock Light
+	2.Unlock Light
 
 Various Components:
 
