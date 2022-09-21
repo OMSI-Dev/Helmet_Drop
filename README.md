@@ -11,15 +11,17 @@ Once the door is closed a maglock engages preventing the door to be opened durin
 The software is built using platform.io. You can use Arduino IDE by copying the src folder and renaming it to Helmet and renaming the main.cpp file to ‘Helmet.ino’. This will allow you to use Arduino to make modifications. You will need to install any missing libraries through the Arduino Library manager.
 
 ## Project File Organization
-docs : documentation and pictures
-src : source code
-eagle : pcb files
-examples_tests : N/A
-processing: location of computer app
-processing/data: assets used for the processing app
-readme.md : basic project info its the file you are reading
-resources:Helmet_Drop BOM.xls
-some other directories are used by platformio and vscode
+
+	docs : documentation and pictures
+	src : source code
+	eagle : pcb files
+	examples_tests : N/A
+	processing: location of computer app
+	processing/data: assets used for the processing app
+	readme.md : basic project info its the file you are reading
+	resources:Helmet_Drop BOM.xls
+	
+	some other directories are used by platformio and vscode
 
 #### Hardware
 
