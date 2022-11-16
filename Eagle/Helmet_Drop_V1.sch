@@ -4346,6 +4346,17 @@ Mag Lock - D13</text>
 <wire x1="322.58" y1="180.34" x2="322.58" y2="185.42" width="0.1524" layer="91"/>
 </segment>
 </net>
+<net name="N$5" class="0">
+<segment>
+<pinref part="U1" gate="G$1" pin="D7"/>
+<wire x1="114.3" y1="142.24" x2="132.08" y2="142.24" width="0.1524" layer="91"/>
+<wire x1="132.08" y1="142.24" x2="132.08" y2="170.18" width="0.1524" layer="91"/>
+<wire x1="132.08" y1="170.18" x2="78.74" y2="170.18" width="0.1524" layer="91"/>
+<pinref part="U1" gate="G$1" pin="RST"/>
+<wire x1="78.74" y1="170.18" x2="78.74" y2="162.56" width="0.1524" layer="91"/>
+<wire x1="78.74" y1="162.56" x2="81.28" y2="162.56" width="0.1524" layer="91"/>
+</segment>
+</net>
 </nets>
 </sheet>
 </sheets>

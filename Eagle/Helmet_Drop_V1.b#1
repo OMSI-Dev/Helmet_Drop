@@ -3,7 +3,7 @@
 <eagle version="9.6.2">
 <drawing>
 <settings>
-<setting alwaysvectorfont="no"/>
+<setting alwaysvectorfont="yes"/>
 <setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
@@ -990,7 +990,7 @@ Note, that not all DRC settings must be set by the manufacturer. Several can be 
 <element name="IR_IN" library="con-phoenix-508" library_urn="urn:adsk.eagle:library:176" package="MSTBA3" package3d_urn="urn:adsk.eagle:package:9608/1" value="MSTBA3" x="17.526" y="8.89" smashed="yes">
 <attribute name="MF" value="FARNELL" x="17.526" y="8.89" size="1.778" layer="27" display="off"/>
 <attribute name="MPN" value="1757255" x="17.526" y="8.89" size="1.778" layer="27" display="off"/>
-<attribute name="NAME" x="14.478" y="24.384" size="1.778" layer="25" ratio="10"/>
+<attribute name="NAME" x="14.478" y="23.114" size="1.778" layer="25" ratio="10"/>
 <attribute name="OC_FARNELL" value="3705183" x="17.526" y="8.89" size="1.778" layer="27" display="off"/>
 <attribute name="OC_NEWARK" value="71C4162" x="17.526" y="8.89" size="1.778" layer="27" display="off"/>
 <attribute name="POPULARITY" value="3" x="17.526" y="8.89" size="1.778" layer="27" display="off"/>
@@ -998,7 +998,7 @@ Note, that not all DRC settings must be set by the manufacturer. Several can be 
 <element name="REED_IN" library="con-phoenix-508" library_urn="urn:adsk.eagle:library:176" package="MSTBA3" package3d_urn="urn:adsk.eagle:package:9608/1" value="MSTBA3" x="35.814" y="8.89" smashed="yes">
 <attribute name="MF" value="FARNELL" x="35.814" y="8.89" size="1.778" layer="27" display="off"/>
 <attribute name="MPN" value="1757255" x="35.814" y="8.89" size="1.778" layer="27" display="off"/>
-<attribute name="NAME" x="30.988" y="24.13" size="1.778" layer="25" ratio="10"/>
+<attribute name="NAME" x="30.988" y="22.86" size="1.778" layer="25" ratio="10"/>
 <attribute name="OC_FARNELL" value="3705183" x="35.814" y="8.89" size="1.778" layer="27" display="off"/>
 <attribute name="OC_NEWARK" value="71C4162" x="35.814" y="8.89" size="1.778" layer="27" display="off"/>
 <attribute name="POPULARITY" value="3" x="35.814" y="8.89" size="1.778" layer="27" display="off"/>

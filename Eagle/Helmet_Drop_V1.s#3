@@ -3,7 +3,7 @@
 <eagle version="9.6.2">
 <drawing>
 <settings>
-<setting alwaysvectorfont="yes"/>
+<setting alwaysvectorfont="no"/>
 <setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
@@ -4257,16 +4257,8 @@ Mag Lock - D13</text>
 </segment>
 <segment>
 <pinref part="GND6" gate="1" pin="GND"/>
-<wire x1="111.76" y1="33.02" x2="111.76" y2="20.32" width="0.1524" layer="91"/>
-<pinref part="10K" gate="G$1" pin="1"/>
-<wire x1="111.76" y1="20.32" x2="111.76" y2="17.78" width="0.1524" layer="91"/>
-<wire x1="99.06" y1="20.32" x2="104.14" y2="20.32" width="0.1524" layer="91"/>
-<junction x="111.76" y="20.32"/>
-<wire x1="104.14" y1="20.32" x2="111.76" y2="20.32" width="0.1524" layer="91"/>
-<wire x1="104.14" y1="35.56" x2="104.14" y2="20.32" width="0.1524" layer="91"/>
-<junction x="104.14" y="20.32"/>
-<pinref part="Q2" gate="NMOS" pin="G"/>
 <pinref part="Q2" gate="NMOS" pin="S"/>
+<wire x1="111.76" y1="33.02" x2="111.76" y2="17.78" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND8" gate="1" pin="GND"/>
@@ -4298,54 +4290,22 @@ Mag Lock - D13</text>
 </segment>
 <segment>
 <pinref part="GND7" gate="1" pin="GND"/>
-<wire x1="152.4" y1="27.94" x2="152.4" y2="15.24" width="0.1524" layer="91"/>
-<pinref part="10K1" gate="G$1" pin="1"/>
-<wire x1="152.4" y1="15.24" x2="152.4" y2="12.7" width="0.1524" layer="91"/>
-<wire x1="139.7" y1="15.24" x2="144.78" y2="15.24" width="0.1524" layer="91"/>
-<junction x="152.4" y="15.24"/>
-<wire x1="144.78" y1="15.24" x2="152.4" y2="15.24" width="0.1524" layer="91"/>
-<wire x1="144.78" y1="30.48" x2="144.78" y2="15.24" width="0.1524" layer="91"/>
-<junction x="144.78" y="15.24"/>
-<pinref part="Q1" gate="NMOS" pin="G"/>
 <pinref part="Q1" gate="NMOS" pin="S"/>
+<wire x1="152.4" y1="27.94" x2="152.4" y2="12.7" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND9" gate="1" pin="GND"/>
-<wire x1="198.12" y1="25.4" x2="198.12" y2="12.7" width="0.1524" layer="91"/>
-<pinref part="10K2" gate="G$1" pin="1"/>
-<wire x1="198.12" y1="12.7" x2="198.12" y2="10.16" width="0.1524" layer="91"/>
-<wire x1="185.42" y1="12.7" x2="190.5" y2="12.7" width="0.1524" layer="91"/>
-<junction x="198.12" y="12.7"/>
-<wire x1="190.5" y1="12.7" x2="198.12" y2="12.7" width="0.1524" layer="91"/>
-<wire x1="190.5" y1="27.94" x2="190.5" y2="12.7" width="0.1524" layer="91"/>
-<junction x="190.5" y="12.7"/>
-<pinref part="Q3" gate="NMOS" pin="G"/>
 <pinref part="Q3" gate="NMOS" pin="S"/>
+<wire x1="198.12" y1="25.4" x2="198.12" y2="10.16" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND10" gate="1" pin="GND"/>
-<wire x1="238.76" y1="22.86" x2="238.76" y2="10.16" width="0.1524" layer="91"/>
-<pinref part="10K3" gate="G$1" pin="1"/>
-<wire x1="238.76" y1="10.16" x2="238.76" y2="7.62" width="0.1524" layer="91"/>
-<wire x1="226.06" y1="10.16" x2="231.14" y2="10.16" width="0.1524" layer="91"/>
-<junction x="238.76" y="10.16"/>
-<wire x1="231.14" y1="10.16" x2="238.76" y2="10.16" width="0.1524" layer="91"/>
-<wire x1="231.14" y1="25.4" x2="231.14" y2="10.16" width="0.1524" layer="91"/>
-<junction x="231.14" y="10.16"/>
-<pinref part="Q4" gate="NMOS" pin="G"/>
+<wire x1="238.76" y1="22.86" x2="238.76" y2="7.62" width="0.1524" layer="91"/>
 <pinref part="Q4" gate="NMOS" pin="S"/>
 </segment>
 <segment>
-<wire x1="55.88" y1="180.34" x2="43.18" y2="180.34" width="0.1524" layer="91"/>
-<pinref part="10K4" gate="G$1" pin="1"/>
-<wire x1="43.18" y1="180.34" x2="40.64" y2="180.34" width="0.1524" layer="91"/>
-<wire x1="43.18" y1="193.04" x2="43.18" y2="187.96" width="0.1524" layer="91"/>
-<junction x="43.18" y="180.34"/>
-<wire x1="43.18" y1="187.96" x2="43.18" y2="180.34" width="0.1524" layer="91"/>
-<wire x1="58.42" y1="187.96" x2="43.18" y2="187.96" width="0.1524" layer="91"/>
-<junction x="43.18" y="187.96"/>
-<pinref part="Q5" gate="NMOS" pin="G"/>
 <pinref part="Q5" gate="NMOS" pin="S"/>
+<wire x1="55.88" y1="180.34" x2="40.64" y2="180.34" width="0.1524" layer="91"/>
 <pinref part="GND13" gate="1" pin="GND"/>
 </segment>
 </net>
@@ -4597,6 +4557,46 @@ Mag Lock - D13</text>
 <segment>
 <pinref part="10K4" gate="G$1" pin="2"/>
 <wire x1="53.34" y1="193.04" x2="78.74" y2="193.04" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$6" class="0">
+<segment>
+<pinref part="10K" gate="G$1" pin="1"/>
+<wire x1="99.06" y1="20.32" x2="104.14" y2="20.32" width="0.1524" layer="91"/>
+<wire x1="104.14" y1="35.56" x2="104.14" y2="20.32" width="0.1524" layer="91"/>
+<pinref part="Q2" gate="NMOS" pin="G"/>
+</segment>
+</net>
+<net name="N$7" class="0">
+<segment>
+<pinref part="10K1" gate="G$1" pin="1"/>
+<wire x1="139.7" y1="15.24" x2="144.78" y2="15.24" width="0.1524" layer="91"/>
+<wire x1="144.78" y1="30.48" x2="144.78" y2="15.24" width="0.1524" layer="91"/>
+<pinref part="Q1" gate="NMOS" pin="G"/>
+</segment>
+</net>
+<net name="N$12" class="0">
+<segment>
+<pinref part="10K2" gate="G$1" pin="1"/>
+<wire x1="185.42" y1="12.7" x2="190.5" y2="12.7" width="0.1524" layer="91"/>
+<wire x1="190.5" y1="27.94" x2="190.5" y2="12.7" width="0.1524" layer="91"/>
+<pinref part="Q3" gate="NMOS" pin="G"/>
+</segment>
+</net>
+<net name="N$27" class="0">
+<segment>
+<pinref part="10K3" gate="G$1" pin="1"/>
+<wire x1="226.06" y1="10.16" x2="231.14" y2="10.16" width="0.1524" layer="91"/>
+<wire x1="231.14" y1="25.4" x2="231.14" y2="10.16" width="0.1524" layer="91"/>
+<pinref part="Q4" gate="NMOS" pin="G"/>
+</segment>
+</net>
+<net name="N$28" class="0">
+<segment>
+<pinref part="10K4" gate="G$1" pin="1"/>
+<wire x1="43.18" y1="193.04" x2="43.18" y2="187.96" width="0.1524" layer="91"/>
+<wire x1="58.42" y1="187.96" x2="43.18" y2="187.96" width="0.1524" layer="91"/>
+<pinref part="Q5" gate="NMOS" pin="G"/>
 </segment>
 </net>
 </nets>

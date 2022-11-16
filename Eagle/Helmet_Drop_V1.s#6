@@ -3468,16 +3468,25 @@ type 0309, grid 2.5 mm</description>
 <sheets>
 <sheet>
 <plain>
-<text x="3.048" y="328.168" size="2.54" layer="91">Adapted from Animation Land Main board
+<text x="0.508" y="351.028" size="2.54" layer="91">Adapted from Animation Land Main board
 Enclosure is: AK-P-25
 https://www.aliexpress.com/item/32868993859.html?spm=a2g0o.productlist.0.0.66b64a62y9SUCT&amp;algo_pvid=b4072e38-42a7-4e7b-9174-0dc75ff03143&amp;algo_expid=b4072e38-42a7-4e7b-9174-0dc75ff03143-1&amp;btsid=0ab6f82415815303906962744e020c&amp;ws_ab_test=searchweb0_0,searchweb201602_,searchweb201603_</text>
-<text x="3.048" y="287.528" size="2.54" layer="91">Pinout:
-A0 = Sensor In
-D7 = Button input
-D10 = Button PWM
+<text x="0.508" y="284.988" size="2.54" layer="91">Reed switch Pinout
+white - Common
+brown - NC
+black - NO  --&gt; This should be conencted
 
 
-D9 = Speaker Pin</text>
+PINOUT
+IR - D4
+Reed - D8
+Limit Switch - D0
+Motor Dir - D10
+Motor Step - D9
+Motor En - D1
+Locked Light - D12
+Unlocked Light - D11
+Mag Lock - D13</text>
 </plain>
 <instances>
 <instance part="S1" gate="G$1" x="12.7" y="264.16" smashed="yes">

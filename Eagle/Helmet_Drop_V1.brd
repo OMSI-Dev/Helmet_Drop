@@ -3,7 +3,7 @@
 <eagle version="9.6.2">
 <drawing>
 <settings>
-<setting alwaysvectorfont="yes"/>
+<setting alwaysvectorfont="no"/>
 <setting keepoldvectorfont="yes"/>
 <setting verticaltext="up"/>
 </settings>
@@ -1380,6 +1380,15 @@ Note, that not all DRC settings must be set by the manufacturer. Several can be 
 </signal>
 <signal name="N$3">
 <contactref element="AUXILLARY_LIGHTS" pad="3"/>
+</signal>
+<signal name="N$5">
+<contactref element="U1" pad="D7"/>
+<contactref element="U1" pad="RES"/>
+<wire x1="86.4108" y1="32.2326" x2="86.4108" y2="32.9184" width="0.254" layer="16"/>
+<wire x1="100.1268" y1="18.5166" x2="86.4108" y2="32.2326" width="0.254" layer="16"/>
+<wire x1="100.1268" y1="14.1732" x2="100.1268" y2="18.5166" width="0.254" layer="16"/>
+<wire x1="101.6" y1="12.7" x2="100.1268" y2="14.1732" width="0.254" layer="16"/>
+<wire x1="86.4108" y1="32.9184" x2="86.36" y2="33.02" width="0.254" layer="16"/>
 </signal>
 </signals>
 <mfgpreviewcolors>

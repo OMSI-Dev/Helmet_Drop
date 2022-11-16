@@ -280,7 +280,8 @@
 <dimension x1="-16.51" y1="1.27" x2="-16.51" y2="14.224" x3="-13.97" y3="7.747" textsize="1.4224" layer="48"/>
 <rectangle x1="-17.78" y1="1.27" x2="173.99" y2="14.224" layer="48"/>
 <dimension x1="-17.78" y1="14.224" x2="-17.78" y2="94.488" x3="-13.97" y3="54.356" textsize="1.4224" layer="48"/>
-<text x="-1.27" y="67.31" size="1.778" layer="21">Adafruit Itsybitsy 32u4</text>
+<text x="-2.54" y="66.04" size="1.778" layer="21">Adafruit Itsybitsy
+ 32u4</text>
 <text x="154.94" y="48.26" size="1.778" layer="25" rot="R90">5v</text>
 <text x="158.75" y="48.26" size="1.778" layer="25" rot="R90">12v</text>
 <text x="151.13" y="48.26" size="1.778" layer="25" rot="R90">GND</text>
