@@ -1,0 +1,134 @@
+# NetScript
+# 
+# Exported from Helmet_Drop_V1.5.sch at 12/14/2022 11:41 AM
+# 
+# EAGLE Version 9.6.2 Copyright (c) 1988-2020 Autodesk, Inc.
+# 
+Change Class 0;
+Signal '5V'       '5V_IN'    '1' \
+                  'IR_IN'    '1' \
+                  'REED_IN'  '1' \
+                  'TP2'      'TP-1' \
+                  'U1'       '5V' \
+                  ;
+Change Class 0;
+Signal '12V'      '12V_IN'   '1' \
+                  'AUXILLARY_LIGHTS1' '1' \
+                  'AUXILLARY_LIGHTS1' '2' \
+                  'AUXILLARY_LIGHTS1' '3' \
+                  'TP2'      'TP-2' \
+                  ;
+Change Class 0;
+Signal 'GND'      '12V_IN'   '3' \
+                  '24V'      '1' \
+                  '5V_IN'    '2' \
+                  'AUXILLARY_LIGHTS1' '4' \
+                  'AUXILLARY_LIGHTS1' '5' \
+                  'AUXILLARY_LIGHTS1' '6' \
+                  'GND_JUMPER1' '1' \
+                  'GND_JUMPER2' '1' \
+                  'IR_IN'    '2' \
+                  'Q3'       'S' \
+                  'Q4'       'S' \
+                  'Q5'       'S' \
+                  'REED_IN'  '2' \
+                  'S1'       'P1' \
+                  'S2'       'P1' \
+                  'S3'       'P1' \
+                  'S4'       'P1' \
+                  'S6'       'P1' \
+                  'S8'       'P1' \
+                  'SFTYSWITCH' '2' \
+                  'STEPPER_MOTOR' '6' \
+                  'TP1'      'TP-2' \
+                  'U1'       'GND@2' \
+                  ;
+Change Class 0;
+Signal 'N$1'      '10K4'     '2' \
+                  'U1'       'D13' \
+                  ;
+Change Class 0;
+Signal 'N$2'      'SFTYSWITCH' '1' \
+                  'U1'       'RX' \
+                  ;
+Change Class 0;
+Signal 'N$3'      'D5_JUMPER' '1' \
+                  'U1'       'D5' \
+                  ;
+Change Class 0;
+Signal 'N$4'      'STEPPER_MOTOR' '1' \
+                  'U1'       'D9' \
+                  ;
+Change Class 0;
+Signal 'N$5'      'D7_JUMPER' '1' \
+                  'U1'       'D7' \
+                  ;
+Change Class 0;
+Signal 'N$6'      'D5_JUMPER' '2' \
+                  'GND_JUMPER2' '2' \
+                  'STEPPER_MOTOR' '4' \
+                  ;
+Change Class 0;
+Signal 'N$7'      'SDA_SCL'  '2' \
+                  'U1'       'SCL' \
+                  ;
+Change Class 0;
+Signal 'N$8'      'STEPPER_MOTOR' '2' \
+                  'U1'       'D10' \
+                  ;
+Change Class 0;
+Signal 'N$9'      'D7_JUMPER' '2' \
+                  'GND_JUMPER1' '2' \
+                  'STEPPER_MOTOR' '5' \
+                  ;
+Change Class 0;
+Signal 'N$10'     'Q3'       'D1' \
+                  ;
+Change Class 0;
+Signal 'N$11'     'STEPPER_MOTOR' '3' \
+                  'U1'       'TX' \
+                  ;
+Change Class 0;
+Signal 'N$12'     '10K2'     '1' \
+                  'Q3'       'G' \
+                  ;
+Change Class 0;
+Signal 'N$14'     'REED_IN'  '3' \
+                  'U1'       'D4' \
+                  ;
+Change Class 0;
+Signal 'N$15'     'IR_IN'    '3' \
+                  'U1'       'D8' \
+                  ;
+Change Class 0;
+Signal 'N$16'     'SDA_SCL'  '1' \
+                  'U1'       'SDA' \
+                  ;
+Change Class 0;
+Signal 'N$18'     '10K2'     '2' \
+                  'U1'       'D12' \
+                  ;
+Change Class 0;
+Signal 'N$21'     'MAG_LOCK' '2' \
+                  'Q5'       'D1' \
+                  ;
+Change Class 0;
+Signal 'N$22'     '24V'      '2' \
+                  'MAG_LOCK' '1' \
+                  'TP1'      'TP-1' \
+                  ;
+Change Class 0;
+Signal 'N$24'     'Q4'       'D1' \
+                  ;
+Change Class 0;
+Signal 'N$25'     '10K3'     '2' \
+                  'U1'       'D11' \
+                  ;
+Change Class 0;
+Signal 'N$27'     '10K3'     '1' \
+                  'Q4'       'G' \
+                  ;
+Change Class 0;
+Signal 'N$28'     '10K4'     '1' \
+                  'Q5'       'G' \
+                  ;

@@ -29,7 +29,6 @@ bool checkSwitches(bool doorShut)
        doorStart = 0; 
      }
 
-
     if (reedOn == true && doorShut == true && runOnce == false && doorStart == 0) 
     {   
         #ifdef debugverbose
@@ -55,9 +54,22 @@ bool checkSwitches(bool doorShut)
         return doorShut = false;
     }
 
-
-
     //assume the door is open
      return doorShut = false;  
 }
 
+bool lockDoor(bool locked)
+{
+    if(locked == true)
+    {
+    digitalWrite(doorLatchpin,HIGH);
+    digitalWrite(lockedLight,HIGH);
+    digitalWrite(unlockedLight,LOW);
+    }else
+    {
+    digitalWrite(doorLatchpin,LOW);
+    digitalWrite(lockedLight,LOW);
+    digitalWrite(unlockedLight,LOW);   
+    }
+    
+}

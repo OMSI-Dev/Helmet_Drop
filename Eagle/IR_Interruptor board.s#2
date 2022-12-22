@@ -3040,10 +3040,6 @@ High-power, low thermal resistance package.</description>
 <classes>
 <class number="0" name="default" width="0" drill="0">
 </class>
-<class number="1" name="High Power" width="0.4064" drill="0.4826">
-</class>
-<class number="2" name="Low Power" width="0.3048" drill="0.4826">
-</class>
 </classes>
 <parts>
 <part name="J1" library="SparkFun-Connectors" deviceset="M01" device="PTH"/>
@@ -3240,7 +3236,7 @@ High-power, low thermal resistance package.</description>
 <busses>
 </busses>
 <nets>
-<net name="GND" class="1">
+<net name="GND" class="0">
 <segment>
 <pinref part="GND13" gate="1" pin="GND"/>
 <wire x1="88.9" y1="99.06" x2="88.9" y2="93.98" width="0.1524" layer="91"/>
@@ -3289,7 +3285,7 @@ High-power, low thermal resistance package.</description>
 <pinref part="GND7" gate="1" pin="GND"/>
 </segment>
 </net>
-<net name="5V" class="1">
+<net name="5V" class="0">
 <segment>
 <pinref part="SUPPLY1" gate="G$1" pin="5V"/>
 <wire x1="88.9" y1="119.38" x2="88.9" y2="106.68" width="0.1524" layer="91"/>
@@ -3333,7 +3329,7 @@ High-power, low thermal resistance package.</description>
 <wire x1="93.98" y1="30.48" x2="101.6" y2="30.48" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="POWER" class="1">
+<net name="POWER" class="0">
 <segment>
 <wire x1="25.4" y1="22.86" x2="10.16" y2="22.86" width="0.1524" layer="91"/>
 <pinref part="J27" gate="J$1" pin="3"/>

@@ -59,8 +59,10 @@ Bounce2::Button limitBtn = Bounce2::Button();
 //may not use the change state varriables 
 int reedState      = 0;     // current state of the button
 int lastReedState  = 0;     // previous state of the button
+int steps = 100;
+byte microstep = 16;
 
-Stepper hammerStep(1600, motorDir, motorStep);
+Stepper hammerStep(steps * microstep, motorDirPos, motorStepPos);
 
 int ByteRecv, ByteSend = 0; 
 bool gameready = false;
@@ -69,7 +71,7 @@ const int BUFFER_SIZE = 100;
 byte buf[BUFFER_SIZE];
 
 //flags
-bool doorShut = false, reedOn= false, lockedOn= false, dropHammer= false, sendFlag= false, runOnce = false,doorStart = false;
+bool doorShut = false, reedOn= false, lockedOn= false, dropHammer= false, sendFlag= false, runOnce = true,doorStart = false;
 
 void setup() 
 {
@@ -91,33 +93,30 @@ void setup()
 
 
 //set Clock speed for accel
- Wire.setClock(400000);
+ //Wire.setClock(400000);
 
 //set accelerometer I2C
 
-  if (!dso32.begin_I2C()) 
-  {    
-    while (1) {      
-      delay(10);
-      #ifdef debug
-      Serial.println("Can't find accel");
-      #endif
-    }
-  }
+  // if (!dso32.begin_I2C()) 
+  // {    
+  //   while (1) {      
+  //     delay(10);
+  //     //#ifdef debug
+  //     Serial.println("Can't find accel");
+  //     //#endif
+  //   }
+  // }
 
-//Sets accelerometer Range
- dso32.setAccelRange(LSM6DSO32_ACCEL_RANGE_32_G);
-//Sets accelerometer Data Rate
- dso32.setAccelDataRate(LSM6DS_RATE_6_66K_HZ);
+// //Sets accelerometer Range
+//  dso32.setAccelRange(LSM6DSO32_ACCEL_RANGE_32_G);
+// //Sets accelerometer Data Rate
+//  dso32.setAccelDataRate(LSM6DS_RATE_6_66K_HZ);
 
 
 
   //Set the motor to start enabled
   digitalWrite(motorEnb, LOW);
-
-  //Set the motor speed in RPM
-  //keep low to keep the torque high
-  hammerStep.setSpeed(10);
+  hammerStep.setSpeed(45);
 
   //saftey button setup
   limitBtn.attach(limitSwitch, INPUT_PULLUP);
@@ -129,6 +128,7 @@ void setup()
   #endif
   delay(500);
   findHome();
+
   #ifdef debug
   Serial.println("Home Set to IR Position");
   #endif
@@ -137,16 +137,9 @@ void setup()
   limitBtn.update();
   if(limitBtn.isPressed())
   {
-    digitalWrite(doorLatchpin,LOW);
-    digitalWrite(lockedLight,LOW);
-    digitalWrite(unlockedLight,HIGH);
-    //Serial.println("Door was closed at start");
-    doorStart = 1;
-    delay(100);
+    lockDoor(false);
+    delay(20);
   }
-
-    digitalWrite(lockedLight,LOW);
-    digitalWrite(unlockedLight,HIGH);
 }
 
 
@@ -191,7 +184,8 @@ void loop()
       gameready = false; 
       dropHammer = false;      
     }
-    
+
+  
     if(dropHammer == true && gameready == true)
     {
       #ifdef debugverbose
@@ -199,7 +193,8 @@ void loop()
       #endif
       hammerDrop();
     }
-  }  
+  }
+
 }
 
 

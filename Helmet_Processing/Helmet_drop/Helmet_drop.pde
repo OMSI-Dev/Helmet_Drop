@@ -1,4 +1,4 @@
-//library imprt //<>//
+//library imprt //<>// //<>//
 import processing.video.*;
 import processing.serial.*;
 import processing.sound.*;
@@ -16,6 +16,7 @@ int $ = 36;
 String inputStr;
 float[] ptData = new float[200];
 String[] strData = new String[200];
+long failCnt = 0;
 
 //gplot specic varriables that exhange serial data
 //to graph data
@@ -36,7 +37,7 @@ int lastData =0;
 boolean addlayer = false;
 float graphYmin = 0;
 float graphYmax = 3000;
-
+boolean drawUpdate = false;
 
 //timers
 long senUpdate = 0;
@@ -84,8 +85,9 @@ boolean firstRun = true;
 boolean dataRecv = false;
 
 void setup() {
+
   fullScreen();
-  size(1920,1080);
+  size(1920, 1080);
   // create a font located in data folder
   PFont Hel = createFont("/font/helv.otf", 32);
   textFont(Hel);
@@ -107,8 +109,12 @@ void setup() {
   rArrow  = loadImage("/images/redArrow.gif");
 
   //movie assignment
+  //try {
   attractor = new Movie(this, "/images/attractor.mp4");
-
+  //}
+  //catch(Exception e) {
+  //  println("error loading video");
+  // }
 
   //set starting image postions
   imageMode(CENTER);
@@ -121,7 +127,6 @@ void setup() {
 
   // List all the available serial ports:
   printArray(Serial.list());
-
   // Com1 is Serial.list()[0]
   // Serial.list()[1] will pick up the next used COM port
   if (Serial.list().length > 1) {
@@ -131,6 +136,7 @@ void setup() {
     String portName = Serial.list()[0];
     ardPort = new Serial(this, portName, 115200);
   }
+
   //Line Feed to set buffer to read
   ardPort.bufferUntil(lf);
 
@@ -148,7 +154,7 @@ void setup() {
 
   //Sets Grid limit
   plot1.setYLim(graphYmin, graphYmax);
-  plot1.setXLim(0.00, 250.000);
+  plot1.setXLim(0.00, 210.000);
   //Sets how much info is show per axis
   plot1.setVerticalAxesNTicks(3);
   plot1.setHorizontalAxesNTicks(0);
@@ -177,13 +183,9 @@ void setup() {
   plot1.getLayer("layer 2").setPointSize(2.00);
   plot1.getLayer("layer 2").setPointColor(175);
 
-
-  //set array to dummy numbers
-  for (int i = 0; i<=199; i++)
-  {
-    ptData[i] = Float.valueOf(i);
-    layer1points.add(float(i+10), float(i+20));
-  }
+  //tell arduino to reestablish connection(used incase of crash or reset)
+  //timerTick();
+  ardReset();
 }
 
 void draw()
@@ -193,7 +195,6 @@ void draw()
 
   if (gameOn == true)
   {
-
     //prevents movie from playing during gameplay
     if (stopFlag == true)
     {
@@ -204,7 +205,6 @@ void draw()
       attractor.jump(0);
     }
 
-
     //println("Game Timer: " + Timer.time());
     if (Timer.time() >= gameTime)
     {
@@ -212,15 +212,19 @@ void draw()
     }
 
     //update Title & Images for new sensor values
+    //println("Update Title");
     updateTitle();
+    //println("Update Graphics");
     upDog();
+    //println("update arrow postion");
     updateArrow();
     //update Graph
+    //println("update Graph");    
     drawGraph();
+
   } else
   {
     playMovie();
-    
   }
 }
 
@@ -228,13 +232,14 @@ void draw()
 void serialEvent(Serial port)
 {
   //reset largest number
-  largestNumber = 0;
+  //largestNumber = 0;
   playOnce = true;
-
+  drawUpdate = true;
+  
   //clear the layer so it does not just keep adding to the array
   layer1points.set(new GPointsArray());
   //clear layer 1
-  clearLayer();
+  //clearLayer();
 
   //looks for incomming Sensor Data
   //trims any whitespace
@@ -275,8 +280,20 @@ void serialEvent(Serial port)
     }
 
     //only update if we recived a full array
-    if (ptData.length == 200)
+    if (ptData[0] == 1 & ptData[199] == 1)
     {
+      //clear previous layer data
+      clearLayer();
+      largestNumber = 0;
+      //this is used to determine what the arrow height is at and what image to display
+      for (int i = 0; i<=199; i++)
+      {
+        if (largestNumber < ptData[i])
+        {
+          largestNumber = ptData[i];
+        }
+      }
+      updateTitle();
       updatePoints();
     }
   }
@@ -290,17 +307,13 @@ void updatePoints()
   {
     //x isn't being used from the sensor
     //its populated evenly to update the graph so its easier to read
-    //it is based on the poistion in the array
-    layer1points.add(float(i+10), ptData[i]);
-
-    //this is used to determine what the arrow height is at and what image to display
-    if (largestNumber < ptData[i])
-    {
-      largestNumber = ptData[i];
-      updateTitle();
+    //it is based on the position in the array
+    if (i != 0) {
+      layer1points.add(float(i+10), ptData[i]);
+    } else {
+      layer1points.add(float(i), ptData[i]);
     }
   }
-
 
   //set the points to the graph for layer 1
   plot1.addPoints(layer1points, "layer 1");
@@ -316,10 +329,6 @@ void updatePoints()
     break;
 
   case 2:
-    if (firstRun == true)
-    {
-      firstRun = false;
-    }
     //create the array to update the graph
     plot1.setPoints(new GPointsArray(200), "layer 2");
     //Stores Array 1 into Array 3
@@ -327,7 +336,7 @@ void updatePoints()
     //updates layer 2 with Array 2
     plot1.addPoints(layer2points, "layer 2");
     dataState = 3;
-    drawGraph();
+    //drawGraph();
     break;
   case 3:
     //create the array to update the graph
@@ -348,11 +357,11 @@ void drawGraph()
   plot1.beginDraw();
 
   if (largestNumber > 2000)
-  { 
+  {
     //update plot background to red
     plot1.setBoxBgColor(#fbc8b4);
     //play sound once
-    if (red.isPlaying() == false && playOnce == true) {
+    if (playOnce == true) {
       red.play();
       playOnce = false;
     }
@@ -361,34 +370,56 @@ void drawGraph()
     //update color to orange
     plot1.setBoxBgColor(#fed9a5);
     //play sound once
-    if (orange.isPlaying() == false && playOnce == true) {
+    if (playOnce == true) {
       orange.play();
       playOnce = false;
     }
-    
-  } else if (largestNumber > 0 && largestNumber <1000)
+  } else if (largestNumber >= 0 && largestNumber <1000)
   {
     //update graph to green
     plot1.setBoxBgColor(#cfe6bf);
     //play sound once
-    if (green.isPlaying() == false && playOnce == true) {
+    if (playOnce == true) {
       green.play();
       playOnce = false;
     }
-    
   }
 
-  plot1.drawBackground();
-  plot1.drawBox();
-  plot1.drawGridLines(GPlot.HORIZONTAL);
+  try {
+    plot1.drawBackground();
+    plot1.drawBox();
+    plot1.drawGridLines(GPlot.HORIZONTAL);
+  }
+  catch(Exception e) {
+    println("Error At Drawing Background, Box, or Gridlines...");
+  }
+  try {
+    //graph needs to be drawn from back to front
+    plot1.getLayer("layer 2").drawLines();
+  }
+  catch(Exception e) {
+    print("Error At Layer 2 Drawlines");
+    println(e);
+    updatePoints();
+    plot1.getLayer("layer 2").drawLines();
+  }
+  try {
+    //graph needs to be drawn from back to front
+    plot1.getLayer("layer 2").drawPoints();
+  }
+  catch(Exception e) {
+    print("Error At Layer 2 points: ");
+    println(e);
+  }
 
-  //graph needs to be drawn from back to front
-  plot1.getLayer("layer 2").drawLines();
-  plot1.getLayer("layer 2").drawPoints();
-
-  plot1.getLayer("layer 1").drawLines();
-  plot1.getLayer("layer 1").drawPoints();
-  //update helmet images based on success
+  try {
+    plot1.getLayer("layer 1").drawLines();
+    plot1.getLayer("layer 1").drawPoints();
+    //update helmet images based on success
+  }
+  catch(Exception e) {
+    println("Error At Layer 1 Drawlines or points");
+  }
   upDog();
   plot1.endDraw();
 }
@@ -397,7 +428,7 @@ void drawGraph()
 void upDog()
 {
 
-  if (largestNumber > 2000)
+  if (largestNumber >= 2000)
   {
     imageMode(CENTER);
     //applys no dimming effect
@@ -412,7 +443,7 @@ void upDog()
     imageMode(CENTER);
     tint(255, 128);
     image(en1, 1725, 850, disSize, disSize);
-  } else if (largestNumber >1000 && largestNumber < 1999)
+  } else if (largestNumber >=1000 && largestNumber < 1999)
   {
     imageMode(CENTER);
     tint(255, 128);
@@ -423,7 +454,7 @@ void upDog()
     imageMode(CENTER);
     tint(255, 128);
     image(en1, 1725, 850, disSize, disSize);
-  } else if (largestNumber > 0 && largestNumber <999)
+  } else if (largestNumber >= 0 && largestNumber <999)
   {
     imageMode(CENTER);
     tint(255, 128);
@@ -472,17 +503,17 @@ void updateArrow() {
   float Xcord = 1550 ;
   float Ycord = map(largestNumber, graphYmin, graphYmax, 970, 218);
 
-  if (largestNumber > 2000)
+  if (largestNumber >= 2000)
   {
     imageMode(CENTER);
     tint(255, 255);
     image(rArrow, Xcord, Ycord, 50, 50);
-  } else if (largestNumber >1000 && largestNumber < 2000)
+  } else if (largestNumber >=1000 && largestNumber < 2000)
   {
     imageMode(CENTER);
     tint(255, 255);
     image(yArrow, Xcord, Ycord, 50, 50);
-  } else if (largestNumber > 0 && largestNumber <1000)
+  } else if (largestNumber >= 0 && largestNumber <1000)
   {
     imageMode(CENTER);
     tint(255, 255);
@@ -508,7 +539,7 @@ void playMovie() {
     attractor.jump(0);
     image(attractor, width/2, height/2);
     attractor.play();
-  } else { 
+  } else {
     image(attractor, width/2, height/2);
     attractor.play();
   }
@@ -523,4 +554,11 @@ void timerTick() {
   ardPort.write(35);
   ardPort.write(10);
   gameOn = false;
+}
+
+void ardReset() {
+  ardPort.write(35);
+  ardPort.write(10);
+  gameOn = false;
+  playMovie();
 }
