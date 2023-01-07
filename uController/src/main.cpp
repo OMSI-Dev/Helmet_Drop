@@ -43,7 +43,7 @@ bytes being sent or received:
 #include <Adafruit_LSM6DSO32.h>
 
 
-//Decalre Accel
+//Declare Accel
 Adafruit_LSM6DSO32 dso32;
 
 //include subroutines
@@ -62,7 +62,7 @@ int lastReedState  = 0;     // previous state of the button
 int steps = 100;
 byte microstep = 16;
 
-Stepper hammerStep(steps * microstep, motorDirPos, motorStepPos);
+Stepper hammerStep(steps * microstep, motorStepPos,motorStepNeg,motorDirPos, motorDirNeg);
 
 int ByteRecv, ByteSend = 0; 
 bool gameready = false;
@@ -93,30 +93,31 @@ void setup()
 
 
 //set Clock speed for accel
- //Wire.setClock(400000);
+Wire.setClock(400000);
 
 //set accelerometer I2C
 
-  // if (!dso32.begin_I2C()) 
-  // {    
-  //   while (1) {      
-  //     delay(10);
-  //     //#ifdef debug
-  //     Serial.println("Can't find accel");
-  //     //#endif
-  //   }
-  // }
+  if (!dso32.begin_I2C()) 
+  {    
+    while (1) {      
+      delay(10);
+      #ifdef debug
+      Serial.println("Can't find accel");
+      #endif
+    }
+  }
 
-// //Sets accelerometer Range
-//  dso32.setAccelRange(LSM6DSO32_ACCEL_RANGE_32_G);
-// //Sets accelerometer Data Rate
-//  dso32.setAccelDataRate(LSM6DS_RATE_6_66K_HZ);
+//Sets accelerometer Range
+
+dso32.setAccelRange(LSM6DSO32_ACCEL_RANGE_32_G);
+//Sets accelerometer Data Rate
+dso32.setAccelDataRate(LSM6DS_RATE_6_66K_HZ);
 
 
 
   //Set the motor to start enabled
   digitalWrite(motorEnb, LOW);
-  hammerStep.setSpeed(45);
+  hammerStep.setSpeed(motorSpeed);
 
   //saftey button setup
   limitBtn.attach(limitSwitch, INPUT_PULLUP);

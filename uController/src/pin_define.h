@@ -14,15 +14,16 @@
 #define irIN 8
 #define limitSwitch 0
 #define reedIn 4
-#define doorLatchpin 13
+#define doorLatchpin 6
 #define lockedLight 12
 #define unlockedLight 11
 
 #define motorStepPos 9
-//#define mototStepNeg 5
+#define motorStepNeg 5
 #define motorDirPos 10
-//#define motorDirNeg 7
+#define motorDirNeg 7
 #define motorEnb 1
+#define motorSpeed 35
 
 //#define debug
 //#define debugverbose
