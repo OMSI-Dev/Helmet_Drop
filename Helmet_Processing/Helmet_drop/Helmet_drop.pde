@@ -51,7 +51,7 @@ int gameTime = 20000;
 //images & bar
 PImage en1, dis1, en2, dis2, en3, dis3, rArrow, yArrow, gArrow;
 float xbarOffset = 150;
-float largestNumber = 100;
+float largestNumber;
 float enSize = 220;
 float disSize = 170;
 
@@ -356,7 +356,7 @@ void drawGraph()
   // Draw the  plot
   plot1.beginDraw();
 
-  if (largestNumber > 2000)
+  if (largestNumber >= 2000)
   {
     //update plot background to red
     plot1.setBoxBgColor(#fbc8b4);
@@ -365,7 +365,7 @@ void drawGraph()
       red.play();
       playOnce = false;
     }
-  } else if (largestNumber >1000 && largestNumber < 2000)
+  } else if (largestNumber >=1000 && largestNumber < 2000)
   {
     //update color to orange
     plot1.setBoxBgColor(#fed9a5);

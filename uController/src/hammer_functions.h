@@ -150,7 +150,7 @@ void hammerDrop()
         Serial.print("drop");
         Serial.println(drop);
         #endif
-        hammerStep.setSpeed(80); //increase the speed right before the drop to get the motor out of the way
+        hammerStep.setSpeed(50); //increase the speed right before the drop to get the motor out of the way
         hammerStep.step(5);
         hammerStep.step(drop); 
 
@@ -166,13 +166,13 @@ void hammerDrop()
             sensors_event_t gyro;
             sensors_event_t temp;
             dso32.getEvent(&accel,&gyro,&temp);            
-            int smallG = accel.acceleration.z * 150; 
+            int smallG = accel.acceleration.z; // * 125; 
             //Adds 1 to the first & Last position for processing to confirm that the array is filled
             if(i == 0 || i == 199)
             {
             sensorVal[i] = 1;
             
-            }else(sensorVal[i] = constrain(abs(smallG),0,3000));
+            }else(sensorVal[i] = constrain(abs(smallG),0,300));
         }
      
         //Make sure to only send data once per run
