@@ -35,17 +35,6 @@ bytes being sent or received:
          Rewrote homing sequence to find hammer arm with IR at the top of its swing
 */
 
-//Include Libraries 
-#include <Arduino.h>
-#include <Bounce2.h>
-#include <Stepper.h>
-#include <Adafruit_Sensor.h>
-#include <Adafruit_LSM6DSO32.h>
-
-
-//Declare Accel
-Adafruit_LSM6DSO32 dso32;
-
 //include subroutines
 #include <pin_define.h>
 #include <safety_functions.h>
@@ -59,10 +48,9 @@ Bounce2::Button limitBtn = Bounce2::Button();
 //may not use the change state varriables 
 int reedState      = 0;     // current state of the button
 int lastReedState  = 0;     // previous state of the button
-int steps = 100;
-byte microstep = 16;
 
-Stepper hammerStep(steps * microstep, motorStepPos,motorStepNeg,motorDirPos, motorDirNeg);
+
+
 
 int ByteRecv, ByteSend = 0; 
 bool gameready = false;

@@ -1,10 +1,18 @@
 #include <pin_define.h> 
-extern Stepper hammerStep;
+
+int steps = 100;
+byte microstep = 16;
+Stepper hammerStep(steps * microstep, motorStepPos,motorStepNeg,motorDirPos, motorDirNeg);
+
+//Declare Accel
+Adafruit_LSM6DSO32 dso32;
+
 extern bool sendFlag, runOnce, gameready;
 int homeSpeed = -100; //how many steps to take each pass during homing
 int homepos = (homeSpeed*-1); //Set to home speed to start. After homing it sets to 12000. This is the best position for the Hammer.
 int totalsteps = 12800; //this is based off of the stepper counting by 100
 byte homeCount = 0;
+
 /* Stepper Driver Steps to PA Setting*/
 /* Driver Setting         StepTotal(on Arduino)     speed(RPM in setup)   */
 /*    400                  1600           25                  */
@@ -166,14 +174,12 @@ void hammerDrop()
             sensors_event_t gyro;
             sensors_event_t temp;
             dso32.getEvent(&accel,&gyro,&temp);            
-            int smallG = accel.acceleration.z; // * 125; 
+            int smallG = accel.acceleration.z * 4; 
+            sensorVal[i] = constrain(abs(smallG),0,1200);
             //Adds 1 to the first & Last position for processing to confirm that the array is filled
-            if(i == 0 || i == 199)
-            {
-            sensorVal[i] = 1;
-            
-            }else(sensorVal[i] = constrain(abs(smallG),0,300));
         }
+        sensorVal[0] = 1;
+        sensorVal[199] = 1;
      
         //Make sure to only send data once per run
         if(sendFlag == false && gameready == true)
