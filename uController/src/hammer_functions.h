@@ -165,7 +165,7 @@ void hammerDrop()
         if(digitalRead(reedIn) != 1)
         {
             do
-            {
+            {  
             reedSense = digitalRead(reedIn);
             } while (reedSense!=1);
         }
@@ -193,6 +193,8 @@ void hammerDrop()
             }
             //Adds 1 to the first & Last position for processing to confirm that the array is filled
         }
+        sensorVal[0] = 1;
+        sensorVal[199] = 1;
         sensorVal[0] = 1;
         sensorVal[199] = 1;
      
