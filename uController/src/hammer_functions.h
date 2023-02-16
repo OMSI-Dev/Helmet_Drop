@@ -15,6 +15,7 @@ int homepos = (homeSpeed*-1); //Set to home speed to start. After homing it sets
 int totalsteps = 12800; //this is based off of the stepper counting by 100
 byte homeCount = 0;
 bool reedSense;
+bool safePress;
 /* Stepper Driver Steps to PA Setting*/ //OLD MOTOR
 /* Driver Setting         StepTotal(on Arduino)     speed(RPM in setup)   */
 /*    400                  1600           25                  */
@@ -165,9 +166,11 @@ void hammerDrop()
         if(digitalRead(reedIn) != 1)
         {
             do
-            {  
+            {
+            limitBtn.update();
+            safePress = limitBtn.isPressed();  
             reedSense = digitalRead(reedIn);
-            } while (reedSense!=1);
+            } while (reedSense!=1 && safePress == true);
         }
         hammerStep.setSpeed(80); //increase the speed right before the drop to get the motor out of the way
         hammerStep.step(1);
