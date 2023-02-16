@@ -163,83 +163,89 @@ void hammerDrop()
         Serial.println(drop);
         #endif
 
-        if(digitalRead(reedIn) != 1)
+        if(digitalRead(reedIn) == 1)
         {
             do
             {
+            lockDoor(true);
+            reedSense = digitalRead(reedIn);            
+            } while (reedSense!=1);
+            do
+            {
+            lockDoor(true);    
             limitBtn.update();
             safePress = limitBtn.isPressed();  
-            reedSense = digitalRead(reedIn);
-            } while (reedSense!=1 && safePress == true);
-        }
-        hammerStep.setSpeed(80); //increase the speed right before the drop to get the motor out of the way
-        hammerStep.step(1);
-        hammerStep.step(drop); 
+            } while (safePress==false);
+            
+            
+            hammerStep.setSpeed(80); //increase the speed right before the drop to get the motor out of the way
+            hammerStep.step(1);
+            hammerStep.step(drop); 
 
-        //SensorVal Array that gets sent to Processing for graphing
-        uint16_t arraySize = 200;        
-        int sensorVal[arraySize];
+            //SensorVal Array that gets sent to Processing for graphing
+            uint16_t arraySize = 200;        
+            int sensorVal[arraySize];
 
-        for(byte i=0; i<=199; i++)
-        {
-         /*Currently all sensors need to be called 
-         in order to get accel data*/
-            sensors_event_t accel;
-            sensors_event_t gyro;
-            sensors_event_t temp;
-            dso32.getEvent(&accel,&gyro,&temp);            
-            int smallG = accel.acceleration.z * 5; 
-            sensorVal[i] = constrain(abs(smallG),0,1500);
-            if(sensorVal[i] == 1500)
-            {
-                maxCount++;
-            }
-            //Adds 1 to the first & Last position for processing to confirm that the array is filled
-        }
-        sensorVal[0] = 1;
-        sensorVal[199] = 1;
-        sensorVal[0] = 1;
-        sensorVal[199] = 1;
-     
-        //Make sure to only send data once per run
-        if(sendFlag == false && gameready == true)
-        {
             for(byte i=0; i<=199; i++)
-            {                   
-                Serial.print(sensorVal[i]);
-
-                if(i != 199){Serial.print(",");}
-
-                if (i == 199)
-                {   
-                    //Set Flags to disable running the motor until the door opens and closes again
-                    sendFlag = true;
-                    runOnce = true;
-                    //Send the array and close the buffer in Processing app
-                    Serial.write(10);
+            {
+            /*Currently all sensors need to be called 
+            in order to get accel data*/
+                sensors_event_t accel;
+                sensors_event_t gyro;
+                sensors_event_t temp;
+                dso32.getEvent(&accel,&gyro,&temp);            
+                int smallG = accel.acceleration.z * 5; 
+                sensorVal[i] = constrain(abs(smallG),0,1500);
+                if(sensorVal[i] == 1500)
+                {
+                    maxCount++;
                 }
+                //Adds 1 to the first & Last position for processing to confirm that the array is filled
             }
-            //Max Count could be used to infer if there is a material in the exhibit,
-            //This is within reason, if it is the same hardness as the base material the count would be
-            //basically the same
-            // Serial.println(" ");
-            // Serial.print("maxCount: ");
-            // Serial.println(maxCount);
+            sensorVal[0] = 1;
+            sensorVal[199] = 1;
+            sensorVal[0] = 1;
+            sensorVal[199] = 1;
+        
+            //Make sure to only send data once per run
+            if(sendFlag == false && gameready == true)
+            {
+                for(byte i=0; i<=199; i++)
+                {                   
+                    Serial.print(sensorVal[i]);
+
+                    if(i != 199){Serial.print(",");}
+
+                    if (i == 199)
+                    {   
+                        //Set Flags to disable running the motor until the door opens and closes again
+                        sendFlag = true;
+                        runOnce = true;
+                        //Send the array and close the buffer in Processing app
+                        Serial.write(10);
+                    }
+                }
+                //Max Count could be used to infer if there is a material in the exhibit,
+                //This is within reason, if it is the same hardness as the base material the count would be
+                //basically the same
+                // Serial.println(" ");
+                // Serial.print("maxCount: ");
+                // Serial.println(maxCount);
+            }
+            //Move back into position after data is sent
+            //Serial.print("Sending to Home");
+        // Serial.print(homepos);
+            hammerStep.setSpeed(motorSpeed);
+            if(driftCount == 10)
+            {
+            // Serial.println("Drift Correction");   
+            hammerStep.step(homepos-50); 
+            driftCount = 0;
+            }else
+            {hammerStep.step(homepos);}
+
+            lockDoor(false);
         }
-        //Move back into position after data is sent
-        //Serial.print("Sending to Home");
-       // Serial.print(homepos);
-        hammerStep.setSpeed(motorSpeed);
-        if(driftCount == 10)
-        {
-        // Serial.println("Drift Correction");   
-         hammerStep.step(homepos-50); 
-         driftCount = 0;
-        }else
-        {hammerStep.step(homepos);}
-
-        lockDoor(false);
-
     } 
 }
 

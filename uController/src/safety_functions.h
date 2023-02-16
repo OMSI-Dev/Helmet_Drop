@@ -58,7 +58,7 @@ bool checkSwitches(bool doorShut)
      return doorShut = false;  
 }
 
-bool lockDoor(bool locked)
+void lockDoor(bool locked)
 {
     if(locked == true)
     {
