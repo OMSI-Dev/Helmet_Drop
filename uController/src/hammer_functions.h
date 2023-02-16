@@ -1,11 +1,21 @@
 #include <pin_define.h> 
-extern Stepper hammerStep;
+
+int steps = 100;
+byte microstep = 16;
+Stepper hammerStep(steps * microstep, motorStepPos,motorStepNeg,motorDirPos, motorDirNeg);
+byte maxCount;
+byte driftCount;
+
+//Declare Accel
+Adafruit_LSM6DSO32 dso32;
+
 extern bool sendFlag, runOnce, gameready;
 int homeSpeed = -100; //how many steps to take each pass during homing
-int homepos = (homeSpeed*-1); //Set to home speed to start. After homing it sets to 12000. This is the best position for the Hammer.
+int homepos = (homeSpeed*-1); //Set to home speed to start. After homing it sets to 12300. This is the best position for the Hammer.
 int totalsteps = 12800; //this is based off of the stepper counting by 100
 byte homeCount = 0;
-/* Stepper Driver Steps to PA Setting*/
+bool reedSense;
+/* Stepper Driver Steps to PA Setting*/ //OLD MOTOR
 /* Driver Setting         StepTotal(on Arduino)     speed(RPM in setup)   */
 /*    400                  1600           25                  */
 /*    800                  3200           20                  */
@@ -17,7 +27,7 @@ void findHome()
 {    
     //This runs on start up so that the motor always starts in the same position.
     // this may be off a 1-3 steps but close enough to start the program
-    int irSense;
+    
     bool irBool;
     bool startup = false;
     bool Pressed; 
@@ -98,7 +108,7 @@ do
             #endif
             homepos = homepos + 100;
             if(irBool == 0 && homeCount != 1){homepos = 0;homeCount++;}; //this finds the start of the edge of the hammer
-            if(irBool == 1 && homeCount == 1){homepos = 0;homeCount++;}; //this finds the end of the edge of the hammer (should be 1300 steps)            
+            if(irBool == 1 && homeCount == 1){homepos = 0;homeCount++;}; //this finds the end of the edge of the hammer (should be ~1300 steps)            
             if((homepos-totalsteps) >= 1300 && irBool == 0){homeCount++;} //this advances the count to leave the loop
             if(homeCount == 2){homepos =12300;} //12300 should bring the natualis gear to the edge of the hammer ready to drop
         }while(homeCount != 2);
@@ -115,7 +125,8 @@ do
 
 void hammerDrop()
 {   
-    
+    maxCount = 0;
+    driftCount++;
     //Lock the door and turn on/off the lights
     lockDoor(true);
     //used to read if the IR is sensing the arm    
@@ -141,7 +152,7 @@ void hammerDrop()
         //Serial.println(homepos);
         #endif
         
-        int drop = (homepos*-1) - (totalsteps-5);
+        int drop = (homepos*-1) - (totalsteps-1);
 
         
         #ifdef debug
@@ -150,8 +161,16 @@ void hammerDrop()
         Serial.print("drop");
         Serial.println(drop);
         #endif
-        hammerStep.setSpeed(50); //increase the speed right before the drop to get the motor out of the way
-        hammerStep.step(5);
+
+        if(digitalRead(reedIn) != 1)
+        {
+            do
+            {
+            reedSense = digitalRead(reedIn);
+            } while (reedSense!=1);
+        }
+        hammerStep.setSpeed(80); //increase the speed right before the drop to get the motor out of the way
+        hammerStep.step(1);
         hammerStep.step(drop); 
 
         //SensorVal Array that gets sent to Processing for graphing
@@ -166,14 +185,16 @@ void hammerDrop()
             sensors_event_t gyro;
             sensors_event_t temp;
             dso32.getEvent(&accel,&gyro,&temp);            
-            int smallG = accel.acceleration.z; // * 125; 
-            //Adds 1 to the first & Last position for processing to confirm that the array is filled
-            if(i == 0 || i == 199)
+            int smallG = accel.acceleration.z * 5; 
+            sensorVal[i] = constrain(abs(smallG),0,1500);
+            if(sensorVal[i] == 1500)
             {
-            sensorVal[i] = 1;
-            
-            }else(sensorVal[i] = constrain(abs(smallG),0,300));
+                maxCount++;
+            }
+            //Adds 1 to the first & Last position for processing to confirm that the array is filled
         }
+        sensorVal[0] = 1;
+        sensorVal[199] = 1;
      
         //Make sure to only send data once per run
         if(sendFlag == false && gameready == true)
@@ -192,19 +213,26 @@ void hammerDrop()
                     //Send the array and close the buffer in Processing app
                     Serial.write(10);
                 }
-            }      
+            }
+            //Max Count could be used to infer if there is a material in the exhibit,
+            //This is within reason, if it is the same hardness as the base material the count would be
+            //basically the same
+            // Serial.println(" ");
+            // Serial.print("maxCount: ");
+            // Serial.println(maxCount);
         }
         //Move back into position after data is sent
         //Serial.print("Sending to Home");
        // Serial.print(homepos);
         hammerStep.setSpeed(motorSpeed);
-        hammerStep.step(homepos);
+        if(driftCount == 10)
+        {
+        // Serial.println("Drift Correction");   
+         hammerStep.step(homepos-50); 
+         driftCount = 0;
+        }else
+        {hammerStep.step(homepos);}
 
-        //Hard Delay....Timer code was not working
-        //Hard Delay could stay the arduino controls the game state
-        //Processing will wait for data to be passed to it
-        //delay(2000);
-        //unlock the maglock
         lockDoor(false);
 
     } 

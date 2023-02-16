@@ -10,6 +10,11 @@
 // Unlocked Light - D11
 // Mag Lock - D6
 
+#include <Arduino.h>
+#include <Bounce2.h>
+#include <Stepper.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_LSM6DSO32.h>
 
 #define irIN 8
 #define limitSwitch 0
@@ -23,7 +28,8 @@
 #define motorDirPos 10
 #define motorDirNeg 7
 #define motorEnb 1
-#define motorSpeed 35
+#define motorSpeed 60
+
 
 //#define debug
 //#define debugverbose

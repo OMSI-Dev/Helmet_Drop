@@ -18,12 +18,13 @@ float[] ptData = new float[200];
 String[] strData = new String[200];
 long failCnt = 0;
 
-//gplot specic varriables that exhange serial data
+//gplot specic varriables that exchange serial data
 //to graph data
 GPointsArray layer1points = new GPointsArray(200);
 GPointsArray layer2points = new GPointsArray(200);
 GPointsArray layer3points = new GPointsArray(200);
 
+GPoint lastPoint = new GPoint(0.0,0.0);
 
 //Graph Variables
 int limit;
@@ -36,8 +37,10 @@ int dataState =1;
 int lastData =0;
 boolean addlayer = false;
 float graphYmin = 0;
-float graphYmax = 3000;
+float graphYmax = 1500;
 boolean drawUpdate = false;
+float lastPointX;
+float lastPointY;
 
 //timers
 long senUpdate = 0;
@@ -45,11 +48,11 @@ int interval = 10;
 Stopwatch Timer;
 
 //How long gameplay is
-int gameTime = 20000;
+int gameTime = 30000;
 
 
 //images & bar
-PImage en1, dis1, en2, dis2, en3, dis3, rArrow, yArrow, gArrow;
+PImage en1, en2, en3, rArrow, yArrow, gArrow;
 float xbarOffset = 150;
 float largestNumber;
 float enSize = 220;
@@ -219,23 +222,29 @@ void draw()
     //println("update arrow postion");
     updateArrow();
     //update Graph
-    //println("update Graph");    
+    //println("update Graph");
     drawGraph();
-
   } else
   {
-    playMovie();
+    try
+    {
+      playMovie();
+    }
+    catch(Exception e)
+    {
+      println("Video Fail");
+    }
   }
 }
+
 
 
 void serialEvent(Serial port)
 {
   //reset largest number
-  //largestNumber = 0;
-  playOnce = true;
+  //largestNumber = 0; 
   drawUpdate = true;
-  
+
   //clear the layer so it does not just keep adding to the array
   layer1points.set(new GPointsArray());
   //clear layer 1
@@ -243,8 +252,11 @@ void serialEvent(Serial port)
 
   //looks for incomming Sensor Data
   //trims any whitespace
+  try
+  {
   inputStr = trim(port.readString());
-
+  }catch(Exception e){print("Serial failed:"); println(e);};
+  
   //Check to see what came in and do the appropirate action
   if (inputStr.equals("#") == true)
   {
@@ -277,6 +289,11 @@ void serialEvent(Serial port)
     for (int i = 0; i<=199; i++)
     {
       ptData[i] = Float.valueOf(strData[i]);
+      print(strData[i]);
+      print(",");
+      if (i==199) {
+        println("");
+      }
     }
 
     //only update if we recived a full array
@@ -285,6 +302,7 @@ void serialEvent(Serial port)
       //clear previous layer data
       clearLayer();
       largestNumber = 0;
+      playOnce = true;
       //this is used to determine what the arrow height is at and what image to display
       for (int i = 0; i<=199; i++)
       {
@@ -292,6 +310,11 @@ void serialEvent(Serial port)
         {
           largestNumber = ptData[i];
         }
+      }
+      if(playOnce == true)
+      {
+      playsound();
+      playOnce = false;
       }
       updateTitle();
       updatePoints();
@@ -310,6 +333,11 @@ void updatePoints()
     //it is based on the position in the array
     if (i != 0) {
       layer1points.add(float(i+10), ptData[i]);
+      
+      if(ptData[i] == largestNumber)
+      {
+      lastPoint.setXY(float(i+10), ptData[i]);
+      }
     } else {
       layer1points.add(float(i), ptData[i]);
     }
@@ -356,34 +384,20 @@ void drawGraph()
   // Draw the  plot
   plot1.beginDraw();
 
-  if (largestNumber >= 2000)
+  if (largestNumber >= 800)
   {
     //update plot background to red
     plot1.setBoxBgColor(#fbc8b4);
-    //play sound once
-    if (playOnce == true) {
-      red.play();
-      playOnce = false;
-    }
-  } else if (largestNumber >=1000 && largestNumber < 2000)
+  } else if (largestNumber >=400 && largestNumber < 800)
   {
     //update color to orange
     plot1.setBoxBgColor(#fed9a5);
-    //play sound once
-    if (playOnce == true) {
-      orange.play();
-      playOnce = false;
-    }
-  } else if (largestNumber >= 0 && largestNumber <1000)
+  } else if (largestNumber < 400)
   {
     //update graph to green
     plot1.setBoxBgColor(#cfe6bf);
-    //play sound once
-    if (playOnce == true) {
-      green.play();
-      playOnce = false;
-    }
   }
+  
 
   try {
     plot1.drawBackground();
@@ -415,6 +429,11 @@ void drawGraph()
   try {
     plot1.getLayer("layer 1").drawLines();
     plot1.getLayer("layer 1").drawPoints();
+    // plot1.getLayer("layer 1").setPointSize(8.00);
+    //plot1.getLayer("layer 1").setPointColor(#FF0000);    
+    //plot1.getLayer("layer 1").drawPoint(lastPoint);
+    // plot1.getLayer("layer 1").setPointSize(4.00);
+    //plot1.getLayer("layer 1").setPointColor(0);  
     //update helmet images based on success
   }
   catch(Exception e) {
@@ -427,8 +446,7 @@ void drawGraph()
 
 void upDog()
 {
-
-  if (largestNumber >= 2000)
+  if (largestNumber >= 1000)
   {
     imageMode(CENTER);
     //applys no dimming effect
@@ -443,7 +461,7 @@ void upDog()
     imageMode(CENTER);
     tint(255, 128);
     image(en1, 1725, 850, disSize, disSize);
-  } else if (largestNumber >=1000 && largestNumber < 1999)
+  } else if (largestNumber >=500 && largestNumber < 1000)
   {
     imageMode(CENTER);
     tint(255, 128);
@@ -454,7 +472,7 @@ void upDog()
     imageMode(CENTER);
     tint(255, 128);
     image(en1, 1725, 850, disSize, disSize);
-  } else if (largestNumber >= 0 && largestNumber <999)
+  } else if (largestNumber <500)
   {
     imageMode(CENTER);
     tint(255, 128);
@@ -503,17 +521,17 @@ void updateArrow() {
   float Xcord = 1550 ;
   float Ycord = map(largestNumber, graphYmin, graphYmax, 970, 218);
 
-  if (largestNumber >= 2000)
+  if (largestNumber >= 1000)
   {
     imageMode(CENTER);
     tint(255, 255);
     image(rArrow, Xcord, Ycord, 50, 50);
-  } else if (largestNumber >=1000 && largestNumber < 2000)
+  } else if (largestNumber >=500 && largestNumber < 1000)
   {
     imageMode(CENTER);
     tint(255, 255);
     image(yArrow, Xcord, Ycord, 50, 50);
-  } else if (largestNumber >= 0 && largestNumber <1000)
+  } else if (largestNumber <500)
   {
     imageMode(CENTER);
     tint(255, 255);
@@ -546,7 +564,12 @@ void playMovie() {
 }
 
 void movieEvent(Movie m) {
-  m.read();
+  try {
+    m.read();
+  }
+  catch(Exception e) {
+    println("Video Fail");
+  }
 }
 
 void timerTick() {
@@ -561,4 +584,19 @@ void ardReset() {
   ardPort.write(10);
   gameOn = false;
   playMovie();
+}
+
+void playsound()
+{
+
+  if (largestNumber >= 1000)
+  {
+    red.play();
+  } else if (largestNumber >=500 && largestNumber < 1000)
+  {
+    orange.play();
+  } else if (largestNumber <500)
+  {
+    green.play();
+  }
 }

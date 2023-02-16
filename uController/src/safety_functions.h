@@ -69,7 +69,7 @@ bool lockDoor(bool locked)
     {
     digitalWrite(doorLatchpin,LOW);
     digitalWrite(lockedLight,LOW);
-    digitalWrite(unlockedLight,LOW);   
+    digitalWrite(unlockedLight,HIGH);   
     }
     
 }
