@@ -4,10 +4,10 @@ extern bool runOnce,sendFlag,doorStart,gameready;
 
 
 bool checkSwitches(bool doorShut)
-{
+{   
+    
     bool reedOn;
     reedOn = digitalRead(reedIn);
-
     #ifdef debugverbose
     Serial.println("in Safety Functions");
     Serial.print("Check Reed: "); 
@@ -26,8 +26,8 @@ bool checkSwitches(bool doorShut)
     if(doorStart == 1 && reedOn == false && doorShut == false)
     {  
        //Serial.println("Door is cleared");
-       doorStart = 0; 
-     }
+        doorStart = 0; 
+    }
 
     if (reedOn == true && doorShut == true && runOnce == false && doorStart == 0) 
     {   
@@ -36,7 +36,6 @@ bool checkSwitches(bool doorShut)
         #endif
         digitalWrite(doorLatchpin,HIGH);
         return doorShut = true;
-        
     }
     else if (reedOn == false && doorShut == false)
     {
@@ -69,7 +68,9 @@ void lockDoor(bool locked)
     {
     digitalWrite(doorLatchpin,LOW);
     digitalWrite(lockedLight,LOW);
-    digitalWrite(unlockedLight,HIGH);   
+    digitalWrite(unlockedLight,HIGH);
+            //     Serial.write(64);
+            // Serial.write(10);      
     }
     
 }

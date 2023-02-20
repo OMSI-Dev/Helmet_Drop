@@ -17,6 +17,7 @@ String inputStr;
 float[] ptData = new float[200];
 String[] strData = new String[200];
 long failCnt = 0;
+boolean oneData = true;
 
 //gplot specic varriables that exchange serial data
 //to graph data
@@ -130,8 +131,9 @@ void setup() {
 
   // List all the available serial ports:
   printArray(Serial.list());
+  println("Seraching for Serial");
   // Com1 is Serial.list()[0]
-  // Serial.list()[1] will pick up the next used COM port
+  // Serial.list()[1] will pick up the next used COM port  
   if (Serial.list().length > 1) {
     String portName = Serial.list()[1];
     ardPort = new Serial(this, portName, 115200);
@@ -186,13 +188,13 @@ void setup() {
   plot1.getLayer("layer 2").setPointSize(2.00);
   plot1.getLayer("layer 2").setPointColor(175);
 
-  //tell arduino to reestablish connection(used incase of crash or reset)
-  //timerTick();
+  //tell arduino to reestablish connection(used incase of crash or reset
+
   ardReset();
 }
 
 void draw()
-{
+{  
   background(255);
   noFill();
 
@@ -238,89 +240,115 @@ void draw()
 }
 
 
-
-void serialEvent(Serial port)
-{
-  //reset largest number
-  //largestNumber = 0; 
-  drawUpdate = true;
-
-  //clear the layer so it does not just keep adding to the array
-  layer1points.set(new GPointsArray());
-  //clear layer 1
-  //clearLayer();
-
-  //looks for incomming Sensor Data
-  //trims any whitespace
-  try
-  {
-  inputStr = trim(port.readString());
-  }catch(Exception e){print("Serial failed:"); println(e);};
+void serialEvent(Serial port){
   
-  //Check to see what came in and do the appropirate action
-  if (inputStr.equals("#") == true)
-  {
-    //flip the stop video flag
-    stopFlag = true;
-    //game is starting
-    gameOn = true;
-    Timer.start();
-    //tell arduino to send data
-    port.write(33);
-    port.write(10);
-  }
-
-  if (gameOn == true & inputStr.equals("$") == true)
-  {
-    //reset timer
-    Timer.reset();
-    Timer.start();
-  }
-
-  if (gameOn == true & inputStr.equals("#") == false & inputStr.equals("$") == false)
-  {
-    //cleanup the incoming string
-    inputStr = inputStr.replaceAll(",$|^,", "");
-
-    //Split at the comma into the array
-    strData = inputStr.split("\\s*,\\s*");
-
-    //convert the string to float to be able to place on grid
-    for (int i = 0; i<=199; i++)
+    //reset largest number
+    //largestNumber = 0; 
+    drawUpdate = true;
+  
+    //clear the layer so it does not just keep adding to the array
+    layer1points.set(new GPointsArray());
+    //clear layer 1
+    //clearLayer();
+  
+    //looks for incomming Sensor Data
+    //trims any whitespace
+    try
     {
-      ptData[i] = Float.valueOf(strData[i]);
-      print(strData[i]);
-      print(",");
-      if (i==199) {
-        println("");
-      }
+      inputStr = trim(port.readString());
+    }catch(Exception e){print("Serial failed:"); println(e);};
+    
+    print("Allow Data: ");
+    println(oneData);
+    //Check to see what came in and do the appropirate action
+  
+  if (inputStr == null) { return; }
+    
+    if (inputStr.equals("#") == true)
+    { 
+      print("Input: ");
+      println(inputStr);
+      //flip the stop video flag
+      stopFlag = true;
+      //game is starting
+      gameOn = true;
+      Timer.start();
+      //tell arduino to send data
+      port.write(33);
+      port.write(10);    
     }
-
-    //only update if we recived a full array
-    if (ptData[0] == 1 & ptData[199] == 1)
+    
+  
+    if (gameOn == true & inputStr.equals("$") == true)
+    { 
+      print("Input: ");
+      println(inputStr);
+      //reset timer
+      Timer.reset();
+      Timer.start();    
+    }
+    
+    if(inputStr.equals("@") == true) //<>//
     {
-      //clear previous layer data
-      clearLayer();
-      largestNumber = 0;
-      playOnce = true;
-      //this is used to determine what the arrow height is at and what image to display
+      print("Input: ");
+      println(inputStr);
+      oneData = true;
+      //ardPort.clear();
+    }
+    
+    if (gameOn == true & inputStr.equals("#") == false & inputStr.equals("$") == false & inputStr.equals("@") == false & oneData == true)
+    { 
+      println("changing data");
+      oneData = false;
+      //cleanup the incoming string
+      try{
+      inputStr = inputStr.replaceAll(",$|^,", "");
+      }catch(Exception e){print("Replace failed:"); println(e);};
+      
+      try{
+      //Split at the comma into the array
+      strData = inputStr.split("\\s*,\\s*");
+      }catch(Exception e){print("Split failed:"); println(e);};
+      
+      ardPort.clear();
+      
+      //convert the string to float to be able to place on grid
       for (int i = 0; i<=199; i++)
       {
-        if (largestNumber < ptData[i])
-        {
-          largestNumber = ptData[i];
+        ptData[i] = Float.valueOf(strData[i]); //<>//
+        print(strData[i]);
+        print(",");
+        if (i==199) {
+          println("");
         }
       }
-      if(playOnce == true)
+      
+      //only update if we recived a full array
+      if (ptData[0] == 1 & ptData[199] == 1)
       {
-      playsound();
-      playOnce = false;
+        //clear previous layer data
+        clearLayer();
+        largestNumber = 0;
+        playOnce = true;
+        //this is used to determine what the arrow height is at and what image to display
+        for (int i = 0; i<=199; i++)
+        {
+          if (largestNumber < ptData[i])
+          {
+            largestNumber = ptData[i]; //<>//
+          }
+        }
+        if(playOnce == true)
+        {
+        playsound();
+        playOnce = false;      
+        }
+        updateTitle();
+        updatePoints();      
       }
-      updateTitle();
-      updatePoints();
-    }
+    }    
   }
-}
+
 
 void updatePoints()
 {
@@ -440,7 +468,7 @@ void drawGraph()
     println("Error At Layer 1 Drawlines or points");
   }
   upDog();
-  plot1.endDraw();
+  plot1.endDraw();  
 }
 
 
@@ -550,7 +578,7 @@ void clearLayer() {
   plot1.endDraw();
 }
 void playMovie() {
-
+  //println("Play movie");
   if (attractor.time() >= (attractor.duration()- videoOffset)) {
     //quick pause to update the start position
     attractor.pause();
@@ -572,19 +600,31 @@ void movieEvent(Movie m) {
   }
 }
 
-void timerTick() {
-  Timer.reset();
-  ardPort.write(35);
+void timerTick() {  
+  println("Timer reset");
+  Timer.reset(); 
+  ardPort.clear();
+  ardPort.write(37);
+  println("sent 37");
   ardPort.write(10);
   gameOn = false;
 }
 
 void ardReset() {
-  ardPort.write(35);
-  ardPort.write(10);
+  //println("Arduino Reset");
+  try {
+    ardPort.write(37);
+    println("sent 37");
+    ardPort.write(10);
+  }
+  catch(Exception e) {
+    println("Failed to send Reset Signal");
+  }
+
+  //println("Set game to false");
   gameOn = false;
-  playMovie();
-}
+  println("Arduino Reset finished");
+ }
 
 void playsound()
 {

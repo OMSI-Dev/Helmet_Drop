@@ -55,11 +55,12 @@ int lastReedState  = 0;     // previous state of the button
 int ByteRecv, ByteSend = 0; 
 bool gameready = false;
 
-const int BUFFER_SIZE = 100;
+const int BUFFER_SIZE = 1;
 byte buf[BUFFER_SIZE];
 
 //flags
 bool doorShut = false, reedOn= false, lockedOn= false, dropHammer= false, sendFlag= false, runOnce = true,doorStart = false;
+bool serialCheck = true;
 
 void setup() 
 {
@@ -74,7 +75,8 @@ void setup()
 
   //start serial
   Serial.begin(115200);
-  
+  Serial.setTimeout(5);
+
   //delay until connected  
   while (!Serial)
     delay(10);
@@ -129,14 +131,17 @@ dso32.setAccelDataRate(LSM6DS_RATE_6_66K_HZ);
     lockDoor(false);
     delay(20);
   }
-}
 
+  }
 
 void loop() 
 {
-  
+
   //Check the sensor states
   //Reed switch(reedON) should be high && limit(doorShut) switch should be high
+
+  //this is blocking code but has a 5ms timeout
+  Serial.readBytesUntil('\n', buf, BUFFER_SIZE);
   doorShut = checkSwitches(doorShut);
 
   //Run the hammer drop routine if the door is shut
@@ -148,15 +153,17 @@ void loop()
 
   if(doorShut == true)
   {
+    
     //Stop the video & start the game timer
     if(gameready == false && dropHammer == false)
     {    
       Serial.print("#");
       Serial.write(10);
       dropHammer = true;
+      
     }
 
-    Serial.readBytesUntil('\n', buf, BUFFER_SIZE);
+
 
     if(buf[0] == 33)
     {
@@ -164,24 +171,25 @@ void loop()
       #ifdef debug
       Serial.println("Game Ready");
       #endif  
-      gameready = true;       
-    }
+      gameready = true;           
+    } 
 
-    if(buf[0] == 35)
-    {
-      buf[0] = 0;  
-      gameready = false; 
-      dropHammer = false;      
-    }
-
-  
+ 
     if(dropHammer == true && gameready == true)
     {
       #ifdef debugverbose
       Serial.println("Drop Hamer");
       #endif
-      hammerDrop();
+      hammerDrop();     
     }
+  }
+
+    if(buf[0] == 37)
+  {
+    buf[0] = 0;  
+    gameready = false; 
+    dropHammer = false;      
+    lockDoor(false);        
   }
 
 }

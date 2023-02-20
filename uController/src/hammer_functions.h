@@ -1,7 +1,7 @@
 #include <pin_define.h> 
 
-int steps = 100;
-byte microstep = 16;
+int steps = 200;
+byte microstep = 4;
 Stepper hammerStep(steps * microstep, motorStepPos,motorStepNeg,motorDirPos, motorDirNeg);
 byte maxCount;
 byte driftCount;
@@ -10,9 +10,9 @@ byte driftCount;
 Adafruit_LSM6DSO32 dso32;
 
 extern bool sendFlag, runOnce, gameready;
-int homeSpeed = -100; //how many steps to take each pass during homing
-int homepos = (homeSpeed*-1); //Set to home speed to start. After homing it sets to 12300. This is the best position for the Hammer.
-int totalsteps = 12800; //this is based off of the stepper counting by 100
+int homeSpeed = -50; //how many steps to take each pass during homing
+int homepos = (homeSpeed*-1); //Set to home speed to start. After homing it sets to 6400 This is the best position for the Hammer.
+int totalsteps = 6400; //this is based off of the stepper counting by 50
 byte homeCount = 0;
 bool reedSense;
 bool safePress;
@@ -28,7 +28,7 @@ void findHome()
 {    
     //This runs on start up so that the motor always starts in the same position.
     // this may be off a 1-3 steps but close enough to start the program
-    
+    hammerStep.setSpeed(100);
     bool irBool;
     bool startup = false;
     bool Pressed; 
@@ -90,7 +90,7 @@ do
         #ifdef debug
         Serial.println("Found edge...");
         Serial.print("IR:");
-        Serial.println(irSense);
+        Serial.println(irBool);
         #endif
 
         do
@@ -106,16 +106,18 @@ do
             #ifdef debug
             Serial.print("Home Step Count: ");
             Serial.println(homepos);
+            Serial.print("Home Count: ");
+            Serial.println(homeCount);
             #endif
-            homepos = homepos + 100;
-            if(irBool == 0 && homeCount != 1){homepos = 0;homeCount++;}; //this finds the start of the edge of the hammer
-            if(irBool == 1 && homeCount == 1){homepos = 0;homeCount++;}; //this finds the end of the edge of the hammer (should be ~1300 steps)            
-            if((homepos-totalsteps) >= 1300 && irBool == 0){homeCount++;} //this advances the count to leave the loop
-            if(homeCount == 2){homepos =12300;} //12300 should bring the natualis gear to the edge of the hammer ready to drop
+            homepos = homepos + 50;
+            if(irBool == 0 && homeCount != 1){homepos = 0;homeCount++;}; //this finds the start of the edge of the hammer      
+            if(irBool == 1 && homeCount == 1){homepos = 0;homeCount++;}; //this finds the end of the edge of the hammer (should be ~1300 steps) 
+            if((totalsteps-homepos) <= 6000 && irBool == 0){homeCount++;} //this advances the count to leave the loop
+            if(homeCount == 2){homepos = totalsteps;} //6400 is a full rotation
         }while(homeCount != 2);
        
-        homepos = (homepos * -1); // convert to negative so the motor spins in the correct direction
-        hammerStep.step(homepos); // this sets the hammer to be raised
+         homepos = (homepos * -1); // convert to negative so the motor spins in the correct direction
+         hammerStep.step(homepos); // this sets the hammer to be raised        
         #ifdef debug
         Serial.print("Home Step: ");
         Serial.println(homepos);
@@ -127,16 +129,11 @@ do
 void hammerDrop()
 {   
     maxCount = 0;
-    driftCount++;
     //Lock the door and turn on/off the lights
     lockDoor(true);
     //used to read if the IR is sensing the arm    
     bool irSense;
   
-    //send signal to reset timer
-    Serial.write(36);
-    Serial.write(10);
-
     //read IR to confirm hammers position
     irSense = digitalRead(irIN);
     #ifdef debug
@@ -153,8 +150,7 @@ void hammerDrop()
         //Serial.println(homepos);
         #endif
         
-        int drop = (homepos*-1) - (totalsteps-1);
-
+        int drop = -400;
         
         #ifdef debug
         Serial.print("homepos: ");
@@ -165,6 +161,10 @@ void hammerDrop()
 
         if(digitalRead(reedIn) == 1)
         {
+            //send signal to reset timer
+            Serial.write(36);
+            Serial.write(10);
+
             do
             {
             lockDoor(true);
@@ -178,8 +178,7 @@ void hammerDrop()
             } while (safePress==false);
             
             
-            hammerStep.setSpeed(80); //increase the speed right before the drop to get the motor out of the way
-            hammerStep.step(1);
+            hammerStep.setSpeed(125); //increase the speed right before the drop to get the motor out of the way
             hammerStep.step(drop); 
 
             //SensorVal Array that gets sent to Processing for graphing
@@ -202,8 +201,6 @@ void hammerDrop()
                 }
                 //Adds 1 to the first & Last position for processing to confirm that the array is filled
             }
-            sensorVal[0] = 1;
-            sensorVal[199] = 1;
             sensorVal[0] = 1;
             sensorVal[199] = 1;
         
@@ -236,16 +233,10 @@ void hammerDrop()
             //Serial.print("Sending to Home");
         // Serial.print(homepos);
             hammerStep.setSpeed(motorSpeed);
-            if(driftCount == 10)
-            {
-            // Serial.println("Drift Correction");   
-            hammerStep.step(homepos-50); 
-            driftCount = 0;
-            }else
-            {hammerStep.step(homepos);}
-
+            hammerStep.step(homepos - drop);                
             lockDoor(false);
+            Serial.write(64);
+            Serial.write(10);
         }
     } 
 }
-

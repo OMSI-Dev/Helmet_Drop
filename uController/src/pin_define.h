@@ -28,9 +28,9 @@
 #define motorDirPos 10
 #define motorDirNeg 7
 #define motorEnb 1
-#define motorSpeed 60
+#define motorSpeed 100 //in RPM
 
 
 
-//#define debug
-//#define debugverbose
+// #define debug
+// #define debugverbose
