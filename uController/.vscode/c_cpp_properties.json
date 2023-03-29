@@ -10,6 +10,7 @@
             "includePath": [
                 "c:/Users/Dev/Documents/DOT/Helmet_Drop/uController/include",
                 "c:/Users/Dev/Documents/DOT/Helmet_Drop/uController/src",
+                "c:/Users/Dev/Documents/DOT/Helmet_Drop/uController/.pio/libdeps/itsybitsy32u4_5V/MobaTools/src",
                 "c:/Users/Dev/Documents/DOT/Helmet_Drop/uController/.pio/libdeps/itsybitsy32u4_5V/Adafruit LSM6DS",
                 "c:/Users/Dev/Documents/DOT/Helmet_Drop/uController/.pio/libdeps/itsybitsy32u4_5V/Adafruit BusIO",
                 "C:/Users/Dev/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
@@ -29,6 +30,7 @@
                 "path": [
                     "c:/Users/Dev/Documents/DOT/Helmet_Drop/uController/include",
                     "c:/Users/Dev/Documents/DOT/Helmet_Drop/uController/src",
+                    "c:/Users/Dev/Documents/DOT/Helmet_Drop/uController/.pio/libdeps/itsybitsy32u4_5V/MobaTools/src",
                     "c:/Users/Dev/Documents/DOT/Helmet_Drop/uController/.pio/libdeps/itsybitsy32u4_5V/Adafruit LSM6DS",
                     "c:/Users/Dev/Documents/DOT/Helmet_Drop/uController/.pio/libdeps/itsybitsy32u4_5V/Adafruit BusIO",
                     "C:/Users/Dev/.platformio/packages/framework-arduino-avr/libraries/SPI/src",

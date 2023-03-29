@@ -15,6 +15,7 @@
 #include <Stepper.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_LSM6DSO32.h>
+#include <MoToTimer.h>
 
 #define irIN 8
 #define limitSwitch 0
@@ -29,7 +30,6 @@
 #define motorDirNeg 7
 #define motorEnb 1
 #define motorSpeed 100 //in RPM
-
 
 
 // #define debug

@@ -12,10 +12,17 @@ Adafruit_LSM6DSO32 dso32;
 extern bool sendFlag, runOnce, gameready;
 int homeSpeed = -50; //how many steps to take each pass during homing
 int homepos = (homeSpeed*-1); //Set to home speed to start. After homing it sets to 6400 This is the best position for the Hammer.
-int totalsteps = 6400; //this is based off of the stepper counting by 50
+int totalsteps = 6410; //this is based off of the stepper counting by 50
 byte homeCount = 0;
+unsigned int btnWait = 1200;
 bool reedSense;
 bool safePress;
+bool ranAtStart;
+bool setOnce;
+
+bool stallFlag = false;
+MoToTimer resetTimer;
+
 /* Stepper Driver Steps to PA Setting*/ //OLD MOTOR
 /* Driver Setting         StepTotal(on Arduino)     speed(RPM in setup)   */
 /*    400                  1600           25                  */
@@ -26,12 +33,21 @@ bool safePress;
 
 void findHome()
 {    
+    if(ranAtStart == true && setOnce ==false )
+    {
+    //Reset Code to rehome
+    homeSpeed = -50; //how many steps to take each pass during homing
+    homepos = (homeSpeed*-1); //Set to home speed to start. After homing it sets to 6400 This is the best position for the Hammer.
+    homeCount = 0;
+    setOnce = true;
+    }
+
     //This runs on start up so that the motor always starts in the same position.
-    // this may be off a 1-3 steps but close enough to start the program
+    // this may be off a 10-20 steps but close enough to start the program
     hammerStep.setSpeed(100);
     bool irBool;
     bool startup = false;
-    bool Pressed; 
+    bool Pressed;
 
 do
 {   
@@ -117,11 +133,12 @@ do
         }while(homeCount != 2);
        
          homepos = (homepos * -1); // convert to negative so the motor spins in the correct direction
-         hammerStep.step(homepos); // this sets the hammer to be raised        
-        #ifdef debug
+         hammerStep.step(homepos); // this sets the hammer to be raised
+         ranAtStart = true;        
+        //#ifdef debug
         Serial.print("Home Step: ");
         Serial.println(homepos);
-        #endif
+        //#endif
 
     }
 }
@@ -150,7 +167,7 @@ void hammerDrop()
         //Serial.println(homepos);
         #endif
         
-        int drop = -400;
+        int drop = -500;
         
         #ifdef debug
         Serial.print("homepos: ");
@@ -167,76 +184,99 @@ void hammerDrop()
 
             do
             {
-            lockDoor(true);
-            reedSense = digitalRead(reedIn);            
-            } while (reedSense!=1);
+            lockDoor(true);            
+            limitBtn.update();                       
+            } while (limitBtn.isPressed() == false);  
+
             do
             {
-            lockDoor(true);    
-            limitBtn.update();
-            safePress = limitBtn.isPressed();  
-            } while (safePress==false);
-            
-            
-            hammerStep.setSpeed(125); //increase the speed right before the drop to get the motor out of the way
-            hammerStep.step(drop); 
+             limitBtn.update();
+            }while(limitBtn.currentDuration() < btnWait);
 
-            //SensorVal Array that gets sent to Processing for graphing
-            uint16_t arraySize = 200;        
-            int sensorVal[arraySize];
+            if(limitBtn.currentDuration() >= btnWait && limitBtn.isPressed() == true)
+            {
+                hammerStep.setSpeed(125); //increase the speed right before the drop to get the motor out of the way
+                hammerStep.step(drop); 
+                
+                //SensorVal Array that gets sent to Processing for graphing
+                uint16_t arraySize = 200;        
+                int sensorVal[arraySize];
 
-            for(byte i=0; i<=199; i++)
-            {
-            /*Currently all sensors need to be called 
-            in order to get accel data*/
-                sensors_event_t accel;
-                sensors_event_t gyro;
-                sensors_event_t temp;
-                dso32.getEvent(&accel,&gyro,&temp);            
-                int smallG = accel.acceleration.z * 5; 
-                sensorVal[i] = constrain(abs(smallG),0,1500);
-                if(sensorVal[i] == 1500)
-                {
-                    maxCount++;
-                }
-                //Adds 1 to the first & Last position for processing to confirm that the array is filled
-            }
-            sensorVal[0] = 1;
-            sensorVal[199] = 1;
-        
-            //Make sure to only send data once per run
-            if(sendFlag == false && gameready == true)
-            {
                 for(byte i=0; i<=199; i++)
-                {                   
-                    Serial.print(sensorVal[i]);
-
-                    if(i != 199){Serial.print(",");}
-
-                    if (i == 199)
-                    {   
-                        //Set Flags to disable running the motor until the door opens and closes again
-                        sendFlag = true;
-                        runOnce = true;
-                        //Send the array and close the buffer in Processing app
-                        Serial.write(10);
+                {
+                /*Currently all sensors need to be called 
+                in order to get accel data*/
+                    sensors_event_t accel;
+                    sensors_event_t gyro;
+                    sensors_event_t temp;
+                    dso32.getEvent(&accel,&gyro,&temp);            
+                    int smallG = accel.acceleration.z * 5; 
+                    sensorVal[i] = constrain(abs(smallG),0,1500);
+                    if(sensorVal[i] == 1500)
+                    {
+                        maxCount++;
                     }
+                    //Adds 1 to the first & Last position for processing to confirm that the array is filled
                 }
-                //Max Count could be used to infer if there is a material in the exhibit,
-                //This is within reason, if it is the same hardness as the base material the count would be
-                //basically the same
-                // Serial.println(" ");
-                // Serial.print("maxCount: ");
-                // Serial.println(maxCount);
+                sensorVal[0] = 1;
+                sensorVal[199] = 1;
+            
+                //Make sure to only send data once per run
+                if(sendFlag == false && gameready == true)
+                {
+                    for(byte i=0; i<=199; i++)
+                    {                   
+                        Serial.print(sensorVal[i]);
+
+                        if(i != 199){Serial.print(",");}
+
+                        if (i == 199)
+                        {   
+                            //Set Flags to disable running the motor until the door opens and closes again
+                            sendFlag = true;
+                            runOnce = true;
+                            //Send the array and close the buffer in Processing app
+                            Serial.write(10);
+                        }
+                    }
+                    //Max Count could be used to infer if there is a material in the exhibit,
+                    //This is within reason, if it is the same hardness as the base material the count would be
+                    //basically the same
+                    // Serial.println(" ");
+                    // Serial.print("maxCount: ");
+                    // Serial.println(maxCount);
+                }
+                //Move back into position after data is sent
+                //Serial.print("Sending to Home");
+                // Serial.print(homepos);
+                hammerStep.setSpeed(motorSpeed);
+                hammerStep.step(homepos - drop);                
+                lockDoor(false);
+                stallFlag = false;
+                Serial.write(64);
+                Serial.write(10);
+            }//else{Serial.write(72); Serial.write(10);}
+
+        }   
+    }else
+    {
+         do
+        {
+            //Start Timer & Check IR. IF IR does not clear after 3 seconds.
+            //Send to homeing sequence.
+            if(stallFlag == false)
+            {
+            resetTimer.setTime(2000);
+            stallFlag = true;
             }
-            //Move back into position after data is sent
-            //Serial.print("Sending to Home");
-        // Serial.print(homepos);
-            hammerStep.setSpeed(motorSpeed);
-            hammerStep.step(homepos - drop);                
-            lockDoor(false);
-            Serial.write(64);
-            Serial.write(10);
-        }
+
+            if(resetTimer.expired() && stallFlag == true)
+            {
+                setOnce = false;
+                findHome();              
+            }
+            irSense = digitalRead(irIN);
+
+        } while (irSense == true);         
     } 
 }

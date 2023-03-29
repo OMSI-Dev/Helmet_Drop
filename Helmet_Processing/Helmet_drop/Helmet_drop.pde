@@ -230,7 +230,7 @@ void draw()
   {
     try
     {
-      playMovie();
+      playMovie();      
     }
     catch(Exception e)
     {
@@ -295,6 +295,12 @@ void serialEvent(Serial port){
       oneData = true;
       //ardPort.clear();
     }
+    
+    if(gameOn == true & inputStr.equals("#") == false & inputStr.equals("H") == true & inputStr.equals("$") == false & inputStr.equals("@") == false & oneData == true)
+    {
+      closeDoor();
+    }
+    
     
     if (gameOn == true & inputStr.equals("#") == false & inputStr.equals("$") == false & inputStr.equals("@") == false & oneData == true)
     { 
@@ -385,6 +391,7 @@ void updatePoints()
     break;
 
   case 2:
+  try{
     //create the array to update the graph
     plot1.setPoints(new GPointsArray(200), "layer 2");
     //Stores Array 1 into Array 3
@@ -393,8 +400,10 @@ void updatePoints()
     plot1.addPoints(layer2points, "layer 2");
     dataState = 3;
     //drawGraph();
+  }catch(Exception e){print("Serial failed:"); println(e);};
     break;
   case 3:
+  try{
     //create the array to update the graph
     plot1.setPoints(new GPointsArray(200), "layer 2");
     //Stores Array 1 into Array 2
@@ -402,6 +411,7 @@ void updatePoints()
     //updates layer 2 with Array 3
     plot1.addPoints(layer3points, "layer 2");
     dataState = 2;
+  }catch(Exception e){print("Serial failed:"); println(e);};
 
     break;
   }
@@ -409,18 +419,19 @@ void updatePoints()
 
 void drawGraph()
 {
+  try{
   // Draw the  plot
   plot1.beginDraw();
 
-  if (largestNumber >= 800)
+  if (largestNumber >= 1000)
   {
     //update plot background to red
     plot1.setBoxBgColor(#fbc8b4);
-  } else if (largestNumber >=400 && largestNumber < 800)
+  } else if (largestNumber >=500 && largestNumber < 1000)
   {
     //update color to orange
     plot1.setBoxBgColor(#fed9a5);
-  } else if (largestNumber < 400)
+  } else if (largestNumber < 500)
   {
     //update graph to green
     plot1.setBoxBgColor(#cfe6bf);
@@ -468,8 +479,10 @@ void drawGraph()
     println("Error At Layer 1 Drawlines or points");
   }
   upDog();
-  plot1.endDraw();  
+  plot1.endDraw();
+  }catch(Exception e){print("Serial failed:"); println(e);};
 }
+
 
 
 void upDog()
@@ -639,4 +652,14 @@ void playsound()
   {
     green.play();
   }
+}
+
+void closeDoor()
+
+{
+  textSize(100);
+  fill(color(255));
+  //Sets the postion and Text of the start of the title
+  text("CLOSE DOOR", width/2, height/2);
+    
 }
