@@ -14,14 +14,18 @@ int homeSpeed = -50; //how many steps to take each pass during homing
 int homepos = (homeSpeed*-1); //Set to home speed to start. After homing it sets to 6400 This is the best position for the Hammer.
 int totalsteps = 6410; //this is based off of the stepper counting by 50
 byte homeCount = 0;
-unsigned int btnWait = 1200;
+//unsigned int btnWait = 1200; Regular value; trying faster value.
+unsigned int btnWait = 800;
+
 bool reedSense;
 bool safePress;
 bool ranAtStart;
 bool setOnce;
 
 //data mapping
+//only for high value; low is always 0
 int highMap = 300;
+int scalar = 5;
 
 bool stallFlag = false;
 MoToTimer resetTimer;
@@ -65,10 +69,7 @@ do
 }while(Pressed == LOW);
 //locks the door for homing
 
-    digitalWrite(doorLatchpin,HIGH);
-    digitalWrite(lockedLight,HIGH);
-    digitalWrite(unlockedLight,LOW);
-    
+    lockDoor(true); 
     #ifdef debug
     Serial.println("Find Home");
     Serial.print("Startup:");
@@ -193,6 +194,7 @@ void hammerDrop()
 
             do
             {
+             //check to make sure the door is shut for at least a set time   
              limitBtn.update();
             }while(limitBtn.currentDuration() < btnWait);
 
@@ -213,9 +215,9 @@ void hammerDrop()
                     sensors_event_t gyro;
                     sensors_event_t temp;
                     dso32.getEvent(&accel,&gyro,&temp);            
-                    int smallG = accel.acceleration.z * 5; 
+                    int smallG = accel.acceleration.z * scalar; 
                     sensorVal[i] = constrain(abs(smallG),0,highMap);
-                    if(sensorVal[i] == 1500)
+                    if(sensorVal[i] == highMap)
                     {
                         maxCount++;
                     }
@@ -265,7 +267,7 @@ void hammerDrop()
     {
          do
         {
-            //Start Timer & Check IR. IF IR does not clear after 3 seconds.
+            //Start Timer & Check IR. IF IR does not clear after a set amount of seconds.
             //Send to homeing sequence.
             if(stallFlag == false)
             {

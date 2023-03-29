@@ -37,8 +37,11 @@ float xArrow = 0;
 int dataState =1;
 int lastData =0;
 boolean addlayer = false;
+//sets the low end & high end of the graph
+//the  + 5 creates padding on the graph
 float graphYmin = 0;
-float graphYmax = 300;
+float graphYmax = 300 + 5;
+
 boolean drawUpdate = false;
 float lastPointX;
 float lastPointY;
@@ -90,7 +93,11 @@ boolean dataRecv = false;
 
 //graph domains
 int highVal = 200;
-int midVal = 100;
+int lowVal = 100;
+
+//log File
+PrintWriter logFile;
+
 
 void setup() {
 
@@ -141,6 +148,7 @@ void setup() {
   if (Serial.list().length > 1) {
     String portName = Serial.list()[1];
     ardPort = new Serial(this, portName, 115200);
+    println("connected to: " + '\t' + portName);
   } else {
     String portName = Serial.list()[0];
     ardPort = new Serial(this, portName, 115200);
@@ -195,6 +203,8 @@ void setup() {
   //tell arduino to reestablish connection(used incase of crash or reset
 
   ardReset();
+  //create a log file
+  logFile = createWriter("logFile.txt");
 }
 
 void draw()
@@ -239,6 +249,7 @@ void draw()
     catch(Exception e)
     {
       println("Video Fail");
+      logFile.println("Error Output:" + e);
     }
   }
 }
@@ -260,7 +271,7 @@ void serialEvent(Serial port){
     try
     {
       inputStr = trim(port.readString());
-    }catch(Exception e){print("Serial failed:"); println(e);};
+    }catch(Exception e){print("Serial failed:"); println(e); logFile.println("Serial Failed" + e);};
     
     print("Allow Data: ");
     println(oneData);
@@ -287,6 +298,7 @@ void serialEvent(Serial port){
     { 
       print("Input: ");
       println(inputStr);
+      logFile.println("Input: " + inputStr);
       //reset timer
       Timer.reset();
       Timer.start();    
@@ -296,26 +308,30 @@ void serialEvent(Serial port){
     {
       print("Input: ");
       println(inputStr);
+      logFile.flush();
+      //logFile.close();
       oneData = true;
       //ardPort.clear();
     }
     
-    if(gameOn == true & inputStr.equals("#") == false & inputStr.equals("H") == true & inputStr.equals("$") == false & inputStr.equals("@") == false & oneData == true)
+    if(gameOn == true & inputStr.equals("H") == true & inputStr.equals("#") == false & inputStr.equals("$") == false & inputStr.equals("@") == false & oneData == true)
     {
       closeDoor();
     }
     
-    
+  try{
     if (gameOn == true & inputStr.equals("#") == false & inputStr.equals("$") == false & inputStr.equals("@") == false & oneData == true)
     { 
       println("changing data");
       oneData = false;
       //cleanup the incoming string
-      try{
+      try
+      {
       inputStr = inputStr.replaceAll(",$|^,", "");
       }catch(Exception e){print("Replace failed:"); println(e);};
       
-      try{
+      try
+      {
       //Split at the comma into the array
       strData = inputStr.split("\\s*,\\s*");
       }catch(Exception e){print("Split failed:"); println(e);};
@@ -325,14 +341,22 @@ void serialEvent(Serial port){
       //convert the string to float to be able to place on grid
       for (int i = 0; i<=199; i++)
       {
+        if(i == 0)
+        {
+          logFile.println("Start Array");
+        }
         ptData[i] = Float.valueOf(strData[i]); //<>//
         print(strData[i]);
         print(",");
-        if (i==199) {
+        logFile.print(strData[i] + ",");
+        if (i==199) 
+        {
           println("");
+          logFile.println(" ");
+          logFile.println("End Array");
         }
       }
-      
+        
       //only update if we recived a full array
       if (ptData[0] == 1 & ptData[199] == 1)
       {
@@ -356,8 +380,10 @@ void serialEvent(Serial port){
         updateTitle();
         updatePoints();      
       }
-    }    
-  }
+    }
+    } catch(Exception e){println("array exception:" + e); logFile.println("Error Output:" + e);};
+}
+  
 
 
 void updatePoints()
@@ -404,7 +430,7 @@ void updatePoints()
     plot1.addPoints(layer2points, "layer 2");
     dataState = 3;
     //drawGraph();
-  }catch(Exception e){print("Serial failed:"); println(e);};
+  }catch(Exception e){print("Serial failed:"); println(e);logFile.println("Error Output:" + e);};
     break;
   case 3:
   try{
@@ -415,7 +441,7 @@ void updatePoints()
     //updates layer 2 with Array 3
     plot1.addPoints(layer3points, "layer 2");
     dataState = 2;
-  }catch(Exception e){print("Serial failed:"); println(e);};
+  }catch(Exception e){print("Serial failed:"); println(e);logFile.println("Error Output:" + e);};
 
     break;
   }
@@ -427,15 +453,15 @@ void drawGraph()
   // Draw the  plot
   plot1.beginDraw();
 
-  if (largestNumber >= 200)
+  if (largestNumber >= highVal)
   {
     //update plot background to red
     plot1.setBoxBgColor(#fbc8b4);
-  } else if (largestNumber >=100 && largestNumber < 200)
+  } else if (largestNumber >=lowVal && largestNumber < highVal)
   {
     //update color to orange
     plot1.setBoxBgColor(#fed9a5);
-  } else if (largestNumber < 100)
+  } else if (largestNumber < lowVal)
   {
     //update graph to green
     plot1.setBoxBgColor(#cfe6bf);
@@ -449,12 +475,14 @@ void drawGraph()
   }
   catch(Exception e) {
     println("Error At Drawing Background, Box, or Gridlines...");
+    logFile.println("Error Output:" + e);
   }
   try {
     //graph needs to be drawn from back to front
     plot1.getLayer("layer 2").drawLines();
   }
   catch(Exception e) {
+    logFile.println("Error Output:" + e);
     print("Error At Layer 2 Drawlines");
     println(e);
     updatePoints();
@@ -465,6 +493,7 @@ void drawGraph()
     plot1.getLayer("layer 2").drawPoints();
   }
   catch(Exception e) {
+    logFile.println("Error Output:" + e);
     print("Error At Layer 2 points: ");
     println(e);
   }
@@ -480,18 +509,19 @@ void drawGraph()
     //update helmet images based on success
   }
   catch(Exception e) {
+    logFile.println("Error Output:" + e);
     println("Error At Layer 1 Drawlines or points");
   }
   upDog();
   plot1.endDraw();
-  }catch(Exception e){print("Serial failed:"); println(e);};
+  }catch(Exception e){print("Serial failed:"); println(e);logFile.println("Error Output:" + e);};
 }
 
 
 
 void upDog()
 {
-  if (largestNumber >= 200)
+  if (largestNumber >= highVal)
   {
     imageMode(CENTER);
     //applys no dimming effect
@@ -506,7 +536,7 @@ void upDog()
     imageMode(CENTER);
     tint(255, 128);
     image(en1, 1725, 850, disSize, disSize);
-  } else if (largestNumber >=100 && largestNumber < 200)
+  } else if (largestNumber >=lowVal && largestNumber < highVal)
   {
     imageMode(CENTER);
     tint(255, 128);
@@ -517,7 +547,7 @@ void upDog()
     imageMode(CENTER);
     tint(255, 128);
     image(en1, 1725, 850, disSize, disSize);
-  } else if (largestNumber <100)
+  } else if (largestNumber <lowVal)
   {
     imageMode(CENTER);
     tint(255, 128);
@@ -566,17 +596,17 @@ void updateArrow() {
   float Xcord = 1550 ;
   float Ycord = map(largestNumber, graphYmin, graphYmax, 970, 218);
 
-  if (largestNumber >= 200)
+  if (largestNumber >= highVal)
   {
     imageMode(CENTER);
     tint(255, 255);
     image(rArrow, Xcord, Ycord, 50, 50);
-  } else if (largestNumber >=100 && largestNumber < 200)
+  } else if (largestNumber >=lowVal && largestNumber < highVal)
   {
     imageMode(CENTER);
     tint(255, 255);
     image(yArrow, Xcord, Ycord, 50, 50);
-  } else if (largestNumber <100)
+  } else if (largestNumber <lowVal)
   {
     imageMode(CENTER);
     tint(255, 255);
@@ -613,6 +643,7 @@ void movieEvent(Movie m) {
     m.read();
   }
   catch(Exception e) {
+    logFile.println("Error Output:" + e);
     println("Video Fail");
   }
 }
@@ -635,6 +666,7 @@ void ardReset() {
     ardPort.write(10);
   }
   catch(Exception e) {
+    logFile.println("Error Output:" + e);
     println("Failed to send Reset Signal");
   }
 
@@ -648,18 +680,21 @@ void ardReset() {
 void playsound()
 {
 
-  if (largestNumber >= 200)
+  if (largestNumber >= highVal)
   {
     red.play();
-  } else if (largestNumber >=100 && largestNumber < 200)
+  } else if (largestNumber >=lowVal && largestNumber < highVal)
   {
     orange.play();
-  } else if (largestNumber <100)
+  } else if (largestNumber <lowVal)
   {
     green.play();
   }
 }
 
+
+//this is currently not in use
+//remove if never put in prod
 void closeDoor()
 
 {
