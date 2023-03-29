@@ -38,7 +38,7 @@ int dataState =1;
 int lastData =0;
 boolean addlayer = false;
 float graphYmin = 0;
-float graphYmax = 1500;
+float graphYmax = 300;
 boolean drawUpdate = false;
 float lastPointX;
 float lastPointY;
@@ -87,6 +87,10 @@ boolean stopFlag = false;
 boolean soundOn = true;
 boolean firstRun = true;
 boolean dataRecv = false;
+
+//graph domains
+int highVal = 200;
+int midVal = 100;
 
 void setup() {
 
@@ -423,15 +427,15 @@ void drawGraph()
   // Draw the  plot
   plot1.beginDraw();
 
-  if (largestNumber >= 1000)
+  if (largestNumber >= 200)
   {
     //update plot background to red
     plot1.setBoxBgColor(#fbc8b4);
-  } else if (largestNumber >=500 && largestNumber < 1000)
+  } else if (largestNumber >=100 && largestNumber < 200)
   {
     //update color to orange
     plot1.setBoxBgColor(#fed9a5);
-  } else if (largestNumber < 500)
+  } else if (largestNumber < 100)
   {
     //update graph to green
     plot1.setBoxBgColor(#cfe6bf);
@@ -487,7 +491,7 @@ void drawGraph()
 
 void upDog()
 {
-  if (largestNumber >= 1000)
+  if (largestNumber >= 200)
   {
     imageMode(CENTER);
     //applys no dimming effect
@@ -502,7 +506,7 @@ void upDog()
     imageMode(CENTER);
     tint(255, 128);
     image(en1, 1725, 850, disSize, disSize);
-  } else if (largestNumber >=500 && largestNumber < 1000)
+  } else if (largestNumber >=100 && largestNumber < 200)
   {
     imageMode(CENTER);
     tint(255, 128);
@@ -513,7 +517,7 @@ void upDog()
     imageMode(CENTER);
     tint(255, 128);
     image(en1, 1725, 850, disSize, disSize);
-  } else if (largestNumber <500)
+  } else if (largestNumber <100)
   {
     imageMode(CENTER);
     tint(255, 128);
@@ -562,17 +566,17 @@ void updateArrow() {
   float Xcord = 1550 ;
   float Ycord = map(largestNumber, graphYmin, graphYmax, 970, 218);
 
-  if (largestNumber >= 1000)
+  if (largestNumber >= 200)
   {
     imageMode(CENTER);
     tint(255, 255);
     image(rArrow, Xcord, Ycord, 50, 50);
-  } else if (largestNumber >=500 && largestNumber < 1000)
+  } else if (largestNumber >=100 && largestNumber < 200)
   {
     imageMode(CENTER);
     tint(255, 255);
     image(yArrow, Xcord, Ycord, 50, 50);
-  } else if (largestNumber <500)
+  } else if (largestNumber <100)
   {
     imageMode(CENTER);
     tint(255, 255);
@@ -639,16 +643,18 @@ void ardReset() {
   println("Arduino Reset finished");
  }
 
+//
+
 void playsound()
 {
 
-  if (largestNumber >= 1000)
+  if (largestNumber >= 200)
   {
     red.play();
-  } else if (largestNumber >=500 && largestNumber < 1000)
+  } else if (largestNumber >=100 && largestNumber < 200)
   {
     orange.play();
-  } else if (largestNumber <500)
+  } else if (largestNumber <100)
   {
     green.play();
   }

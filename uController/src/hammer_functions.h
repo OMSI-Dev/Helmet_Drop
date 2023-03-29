@@ -20,6 +20,9 @@ bool safePress;
 bool ranAtStart;
 bool setOnce;
 
+//data mapping
+int highMap = 300;
+
 bool stallFlag = false;
 MoToTimer resetTimer;
 
@@ -211,7 +214,7 @@ void hammerDrop()
                     sensors_event_t temp;
                     dso32.getEvent(&accel,&gyro,&temp);            
                     int smallG = accel.acceleration.z * 5; 
-                    sensorVal[i] = constrain(abs(smallG),0,1500);
+                    sensorVal[i] = constrain(abs(smallG),0,highMap);
                     if(sensorVal[i] == 1500)
                     {
                         maxCount++;
