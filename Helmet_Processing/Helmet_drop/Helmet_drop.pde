@@ -97,10 +97,12 @@ int lowVal = 100;
 
 //log File
 PrintWriter logFile;
-
+//create a log file
 
 void setup() {
-
+  String timeStamp = str(day()) + "_" + str(hour()) + "_" + str(minute());
+  logFile = createWriter(timeStamp+ "_" + "logFile.txt");
+  
   fullScreen();
   size(1920, 1080);
   // create a font located in data folder
@@ -142,16 +144,17 @@ void setup() {
 
   // List all the available serial ports:
   printArray(Serial.list());
-  println("Seraching for Serial");
+  logFile.println("Seraching for Serial");
   // Com1 is Serial.list()[0]
   // Serial.list()[1] will pick up the next used COM port  
   if (Serial.list().length > 1) {
     String portName = Serial.list()[1];
     ardPort = new Serial(this, portName, 115200);
-    println("connected to: " + '\t' + portName);
+    logFile.println("connected to: " + '\t' + portName);
   } else {
     String portName = Serial.list()[0];
     ardPort = new Serial(this, portName, 115200);
+    logFile.println("connected to: " + '\t' + portName);
   }
 
   //Line Feed to set buffer to read
@@ -203,15 +206,16 @@ void setup() {
   //tell arduino to reestablish connection(used incase of crash or reset
 
   ardReset();
-  //create a log file
-  logFile = createWriter("logFile.txt");
+
 }
 
 void draw()
-{  
+{ 
+  //setbackground to white
   background(255);
   noFill();
 
+  
   if (gameOn == true)
   {
     //prevents movie from playing during gameplay
@@ -234,7 +238,7 @@ void draw()
     //println("Update Title");
     updateTitle();
     //println("Update Graphics");
-    upDog();
+    imageUpdate();
     //println("update arrow postion");
     updateArrow();
     //update Graph
@@ -244,11 +248,11 @@ void draw()
   {
     try
     {
-      playMovie();      
+      playMovie();     
     }
     catch(Exception e)
     {
-      println("Video Fail");
+      logFile.println("Video Fail");
       logFile.println("Error Output:" + e);
     }
   }
@@ -271,18 +275,18 @@ void serialEvent(Serial port){
     try
     {
       inputStr = trim(port.readString());
-    }catch(Exception e){print("Serial failed:"); println(e); logFile.println("Serial Failed" + e);};
+    }catch(Exception e){logFile.println("Serial Trim Failed" + e);};
     
-    print("Allow Data: ");
-    println(oneData);
+    //print("Allow Data: ");
+    //println(oneData);
     //Check to see what came in and do the appropirate action
   
   if (inputStr == null) { return; }
     
     if (inputStr.equals("#") == true)
     { 
-      print("Input: ");
-      println(inputStr);
+      logFile.print("Input: ");
+      logFile.println(inputStr);
       //flip the stop video flag
       stopFlag = true;
       //game is starting
@@ -290,51 +294,46 @@ void serialEvent(Serial port){
       Timer.start();
       //tell arduino to send data
       port.write(33);
-      port.write(10);    
+      port.write(10);
     }
     
   
-    if (gameOn == true & inputStr.equals("$") == true)
+    if (gameOn && inputStr.equals("$"))
     { 
-      print("Input: ");
-      println(inputStr);
+      logFile.print("Input: ");
+      logFile.println(inputStr);
       logFile.println("Input: " + inputStr);
       //reset timer
       Timer.reset();
       Timer.start();    
     }
     
-    if(inputStr.equals("@") == true) //<>//
+    if(inputStr.equals("@")) //<>//
     {
-      print("Input: ");
-      println(inputStr);
+      logFile.print("Input: ");
+      logFile.println(inputStr);
       logFile.flush();
       //logFile.close();
       oneData = true;
       //ardPort.clear();
     }
-    
-    if(gameOn == true & inputStr.equals("H") == true & inputStr.equals("#") == false & inputStr.equals("$") == false & inputStr.equals("@") == false & oneData == true)
-    {
-      closeDoor();
-    }
-    
+        
   try{
-    if (gameOn == true & inputStr.equals("#") == false & inputStr.equals("$") == false & inputStr.equals("@") == false & oneData == true)
+    if (gameOn  && !inputStr.equals("#") && !inputStr.equals("$") && !inputStr.equals("@") && oneData)
     { 
-      println("changing data");
+      //println("changing data");
       oneData = false;
       //cleanup the incoming string
       try
       {
       inputStr = inputStr.replaceAll(",$|^,", "");
-      }catch(Exception e){print("Replace failed:"); println(e);};
+      }catch(Exception e){logFile.println("Replace ',' failed:" + e);};
       
       try
       {
       //Split at the comma into the array
       strData = inputStr.split("\\s*,\\s*");
-      }catch(Exception e){print("Split failed:"); println(e);};
+      }catch(Exception e){logFile.println("Split Failed:" + e);};
       
       ardPort.clear();
       
@@ -346,8 +345,8 @@ void serialEvent(Serial port){
           logFile.println("Start Array");
         }
         ptData[i] = Float.valueOf(strData[i]); //<>//
-        print(strData[i]);
-        print(",");
+        //print(strData[i]);
+        //print(",");
         logFile.print(strData[i] + ",");
         if (i==199) 
         {
@@ -377,11 +376,13 @@ void serialEvent(Serial port){
         playsound();
         playOnce = false;      
         }
+        logFile.println("Updating Title:");
         updateTitle();
+        logFile.println("Updating points");
         updatePoints();      
       }
     }
-    } catch(Exception e){println("array exception:" + e); logFile.println("Error Output:" + e);};
+    } catch(Exception e){logFile.println("Incorrect Array_Error Output:" + e);};
 }
   
 
@@ -395,64 +396,78 @@ void updatePoints()
     //x isn't being used from the sensor
     //its populated evenly to update the graph so its easier to read
     //it is based on the position in the array
-    if (i != 0) {
-      layer1points.add(float(i+10), ptData[i]);
-      
-      if(ptData[i] == largestNumber)
+    if (i != 0) 
+    {
+      try
       {
-      lastPoint.setXY(float(i+10), ptData[i]);
-      }
+      layer1points.add(float(i+10), ptData[i]);
+      }catch(Exception e){logFile.println("Assigning Layer 1 Points");logFile.println("Error Output:" + e);}
+      
     } else {
       layer1points.add(float(i), ptData[i]);
     }
   }
 
   //set the points to the graph for layer 1
+  try
+  {
   plot1.addPoints(layer1points, "layer 1");
-
-  //Layer 2 should be the previous layers data but gray
+  }catch(Exception e){logFile.println("Adding layerPoints to plot");logFile.println("Error Output:" + e);}
+  
+  
+  //Swap previous data with new data
   switch(dataState)
   {
   case 1:
     //Stores Array 1 into Array 2
+    try
+    {
     layer2points.set(layer1points);
     dataState = 2;
-
+    }catch(Exception e){logFile.println("Failed: Storing Array 1 points to Layer 2");logFile.println("Storing Array 1 points to Layer 2");logFile.println("Error Output:" + e);}
     break;
 
   case 2:
-  try{
-    //create the array to update the graph
-    plot1.setPoints(new GPointsArray(200), "layer 2");
-    //Stores Array 1 into Array 3
-    layer3points.set(layer1points);
-    //updates layer 2 with Array 2
-    plot1.addPoints(layer2points, "layer 2");
-    dataState = 3;
-    //drawGraph();
-  }catch(Exception e){print("Serial failed:"); println(e);logFile.println("Error Output:" + e);};
+    try{
+             
+      //Stores Array 1 into Array 3
+      layer3points.set(new GPointsArray(200));
+      layer3points.set(layer1points);
+       
+      //updates layer 2 with Array 2
+      plot1.addPoints(layer2points, "layer 2");
+      dataState = 3;
+      
+    }catch(Exception e){logFile.println("Storing array 1 -> 3, display layer 3");logFile.println("Error Output:" + e);};
     break;
+    
   case 3:
-  try{
-    //create the array to update the graph
-    plot1.setPoints(new GPointsArray(200), "layer 2");
-    //Stores Array 1 into Array 2
-    layer2points.set(layer1points);
-    //updates layer 2 with Array 3
-    plot1.addPoints(layer3points, "layer 2");
-    dataState = 2;
-  }catch(Exception e){print("Serial failed:"); println(e);logFile.println("Error Output:" + e);};
+    try{
+  
+      //Stores Array 1 into Array 2
+      layer2points.set(new GPointsArray(200));
+      layer2points.set(layer1points);
+      
+      //updates layer 2 with Array 3
+      plot1.addPoints(layer3points, "layer 2");
+      dataState = 2;
+      
+    }catch(Exception e){logFile.println("Storing array 1->2, display layer 3");logFile.println("Error Output:" + e);};
 
     break;
   }
+  
 }
 
 void drawGraph()
 {
-  try{
-  // Draw the  plot
+  //Draw the  plot
   plot1.beginDraw();
-
+  
+  
+  
+  //*************************************************
+  // Start update background color
   if (largestNumber >= highVal)
   {
     //update plot background to red
@@ -466,60 +481,91 @@ void drawGraph()
     //update graph to green
     plot1.setBoxBgColor(#cfe6bf);
   }
-  
+  //*************************************************
+  //End update background color
 
+
+  //*************************************************
+  // Start draw chart
   try {
     plot1.drawBackground();
     plot1.drawBox();
     plot1.drawGridLines(GPlot.HORIZONTAL);
   }
   catch(Exception e) {
-    println("Error At Drawing Background, Box, or Gridlines...");
+    //println("Error At Drawing Background, Box, or Gridlines...");
+    logFile.println("Error At Drawing Background, Box, or Gridlines...");
     logFile.println("Error Output:" + e);
   }
-  try {
+  //*************************************************
+  // End draw chart
+  
+  
+  //*************************************************
+  // Start draw layer 2 (last attempt's data)
+  
+  try {    
     //graph needs to be drawn from back to front
+    if(layer2points.getNPoints() == 200)
+    {
     plot1.getLayer("layer 2").drawLines();
-  }
-  catch(Exception e) {
-    logFile.println("Error Output:" + e);
-    print("Error At Layer 2 Drawlines");
-    println(e);
-    updatePoints();
-    plot1.getLayer("layer 2").drawLines();
-  }
-  try {
-    //graph needs to be drawn from back to front
     plot1.getLayer("layer 2").drawPoints();
+    }
   }
+  
   catch(Exception e) {
     logFile.println("Error Output:" + e);
-    print("Error At Layer 2 points: ");
-    println(e);
+    logFile.println("Error At Layer 2 Drawlines");
+    //print("Error At Layer 2 Drawlines");
+    //println(e);
+   
+    logFile.print("Data State: ");
+    logFile.println(dataState);
+    
+    logFile.print("array Size:");
+    logFile.println(layer2points.getNPoints());
+    
+    //plot1.getLayer("layer 2").drawLines();
+    //plot1.getLayer("layer 2").drawPoints();
+    try{
+    plot1.getLayer("layer 2").drawLines();
+    plot1.getLayer("layer 2").drawPoints();
+    }catch(Exception f){logFile.println("failed on 2nd attempt");}
+    
   }
-
+  
+  //*************************************************
+  // End draw layer 2 (last attempt's data)
+    
+  //*************************************************
+  // Start draw layer 1 (current data)
+  
   try {
     plot1.getLayer("layer 1").drawLines();
     plot1.getLayer("layer 1").drawPoints();
-    // plot1.getLayer("layer 1").setPointSize(8.00);
-    //plot1.getLayer("layer 1").setPointColor(#FF0000);    
-    //plot1.getLayer("layer 1").drawPoint(lastPoint);
-    // plot1.getLayer("layer 1").setPointSize(4.00);
-    //plot1.getLayer("layer 1").setPointColor(0);  
-    //update helmet images based on success
-  }
-  catch(Exception e) {
+      }
+  catch(Exception e) {  
     logFile.println("Error Output:" + e);
-    println("Error At Layer 1 Drawlines or points");
+    logFile.println("Error At Layer 1 Drawlines or points");
+    //println("Error At Layer 1 Drawlines or points");
+        try{
+    plot1.getLayer("layer 1").drawLines();
+    plot1.getLayer("layer 1").drawPoints();
+    }catch(Exception f){logFile.println("failed on 2nd attempt");}
   }
-  upDog();
-  plot1.endDraw();
-  }catch(Exception e){print("Serial failed:"); println(e);logFile.println("Error Output:" + e);};
+  //*************************************************
+  // End draw layer 1 (current data)
+  
+  //update images to match score
+  imageUpdate();
+  
+  //end draw
+  plot1.endDraw();  
 }
 
 
 
-void upDog()
+void imageUpdate()
 {
   if (largestNumber >= highVal)
   {
@@ -613,17 +659,22 @@ void updateArrow() {
     image(gArrow, Xcord, Ycord, 50, 50);
   }
 }
+
 void clearLayer() {
-  plot1.beginDraw();
+  //plot1.beginDraw();
   //clear layer 1 before sending new data
   plot1.setPoints(layer1points, "layer 1");
+  plot1.setPoints(new GPointsArray(), "layer 2");
   plot1.drawBackground();
   plot1.drawBox();
   plot1.drawGridLines(GPlot.HORIZONTAL);
+  plot1.getLayer("layer 2").drawLines();
+  plot1.getLayer("layer 2").drawPoints();
   plot1.getLayer("layer 1").drawLines();
   plot1.getLayer("layer 1").drawPoints();
-  plot1.endDraw();
+ // plot1.endDraw();
 }
+
 void playMovie() {
   //println("Play movie");
   if (attractor.time() >= (attractor.duration()- videoOffset)) {
@@ -644,16 +695,16 @@ void movieEvent(Movie m) {
   }
   catch(Exception e) {
     logFile.println("Error Output:" + e);
-    println("Video Fail");
+    logFile.println("Video Fail");
   }
 }
 
 void timerTick() {  
-  println("Timer reset");
+  //println("Timer reset");
   Timer.reset(); 
   ardPort.clear();
   ardPort.write(37);
-  println("sent 37");
+  //println("sent 37");
   ardPort.write(10);
   gameOn = false;
 }
@@ -662,17 +713,17 @@ void ardReset() {
   //println("Arduino Reset");
   try {
     ardPort.write(37);
-    println("sent 37");
+    //println("sent 37");
     ardPort.write(10);
   }
   catch(Exception e) {
     logFile.println("Error Output:" + e);
-    println("Failed to send Reset Signal");
+    logFile.println("Failed to send Reset Signal");
   }
 
   //println("Set game to false");
   gameOn = false;
-  println("Arduino Reset finished");
+  logFile.println("Arduino Reset finished");
  }
 
 //
@@ -690,17 +741,4 @@ void playsound()
   {
     green.play();
   }
-}
-
-
-//this is currently not in use
-//remove if never put in prod
-void closeDoor()
-
-{
-  textSize(100);
-  fill(color(255));
-  //Sets the postion and Text of the start of the title
-  text("CLOSE DOOR", width/2, height/2);
-    
 }
