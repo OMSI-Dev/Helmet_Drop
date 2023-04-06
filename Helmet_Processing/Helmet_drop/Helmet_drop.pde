@@ -530,7 +530,7 @@ void drawGraph()
     try{
     plot1.getLayer("layer 2").drawLines();
     plot1.getLayer("layer 2").drawPoints();
-    }catch(Exception f){logFile.println("failed on 2nd attempt");}
+    }catch(Exception f){logFile.println("failed on 2nd attempt");exit();}
     
   }
   
@@ -551,7 +551,7 @@ void drawGraph()
         try{
     plot1.getLayer("layer 1").drawLines();
     plot1.getLayer("layer 1").drawPoints();
-    }catch(Exception f){logFile.println("failed on 2nd attempt");}
+    }catch(Exception f){logFile.println("failed on 2nd attempt"); exit();}
   }
   //*************************************************
   // End draw layer 1 (current data)

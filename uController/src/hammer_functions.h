@@ -12,10 +12,10 @@ Adafruit_LSM6DSO32 dso32;
 extern bool sendFlag, runOnce, gameready;
 int homeSpeed = -50; //how many steps to take each pass during homing
 int homepos = (homeSpeed*-1); //Set to home speed to start. After homing it sets to 6400 This is the best position for the Hammer.
-int totalsteps = 6410; //this is based off of the stepper counting by 50
+int totalsteps = 6400; //this is based off of the stepper counting by 50
 byte homeCount = 0;
 //unsigned int btnWait = 1200; Regular value; trying faster value.
-unsigned int btnWait = 800;
+unsigned int btnWait = 500;
 
 bool reedSense;
 bool safePress;
@@ -25,7 +25,9 @@ bool setOnce;
 //data mapping
 //only for high value; low is always 0
 int highMap = 300;
-int scalar = 5;
+int scalar = 1;
+const int NUM_TO_MODIFY = 44;
+const double PERCENT_REDUCTION = 0.35; 
 
 bool stallFlag = false;
 MoToTimer resetTimer;
@@ -139,10 +141,10 @@ do
          homepos = (homepos * -1); // convert to negative so the motor spins in the correct direction
          hammerStep.step(homepos); // this sets the hammer to be raised
          ranAtStart = true;        
-        //#ifdef debug
+        #ifdef debug
         Serial.print("Home Step: ");
         Serial.println(homepos);
-        //#endif
+        #endif
 
     }
 }
@@ -170,7 +172,7 @@ void hammerDrop()
         //Serial.print("Home:");
         //Serial.println(homepos);
         #endif
-        
+        //total steps: 6410
         int drop = -500;
         
         #ifdef debug
@@ -196,11 +198,12 @@ void hammerDrop()
             {
              //check to make sure the door is shut for at least a set time   
              limitBtn.update();
+             //Serial.println("Waiting for door to shut...");
             }while(limitBtn.currentDuration() < btnWait);
 
             if(limitBtn.currentDuration() >= btnWait && limitBtn.isPressed() == true)
             {
-                hammerStep.setSpeed(125); //increase the speed right before the drop to get the motor out of the way
+                hammerStep.setSpeed(110); //increase the speed right before the drop to get the motor out of the way
                 hammerStep.step(drop); 
                 
                 //SensorVal Array that gets sent to Processing for graphing
@@ -221,8 +224,18 @@ void hammerDrop()
                     {
                         maxCount++;
                     }
-                    //Adds 1 to the first & Last position for processing to confirm that the array is filled
+                    
                 }
+
+                //Checks to see to if any material is in if there is
+                //modify the data to lower impact.
+                if(maxCount != 4 && maxCount < 4)
+                for (int i = 0; i < NUM_TO_MODIFY; ++i) 
+                {
+                    sensorVal[i] = sensorVal[i] * (1 - PERCENT_REDUCTION);
+                }
+
+                //Adds 1 to the first & Last position for processing to confirm that the array is filled
                 sensorVal[0] = 1;
                 sensorVal[199] = 1;
             
@@ -247,14 +260,15 @@ void hammerDrop()
                     //Max Count could be used to infer if there is a material in the exhibit,
                     //This is within reason, if it is the same hardness as the base material the count would be
                     //basically the same
-                    // Serial.println(" ");
-                    // Serial.print("maxCount: ");
-                    // Serial.println(maxCount);
+                    //Material Max count 
+                    
                 }
                 //Move back into position after data is sent
                 //Serial.print("Sending to Home");
                 // Serial.print(homepos);
                 hammerStep.setSpeed(motorSpeed);
+                //homepos: 6410
+                //drop: 500
                 hammerStep.step(homepos - drop);                
                 lockDoor(false);
                 stallFlag = false;
@@ -278,7 +292,10 @@ void hammerDrop()
             if(resetTimer.expired() && stallFlag == true)
             {
                 setOnce = false;
-                findHome();              
+                findHome(); 
+               #ifdef debug
+                Serial.println(" Resetting home");
+               #endif            
             }
             irSense = digitalRead(irIN);
 
