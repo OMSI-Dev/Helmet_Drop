@@ -26,7 +26,7 @@ bool setOnce;
 //only for high value; low is always 0
 int highMap = 300;
 int scalar = 1;
-const int NUM_TO_MODIFY = 44;
+const int NUM_TO_MODIFY = 66;
 const double PERCENT_REDUCTION = 0.35; 
 
 bool stallFlag = false;
@@ -217,16 +217,28 @@ void hammerDrop()
                     sensors_event_t accel;
                     sensors_event_t gyro;
                     sensors_event_t temp;
+                    #ifdef debug
+                    Serial.print("check acceleration: ");
+                    Serial.println(i);
+                    #endif
                     dso32.getEvent(&accel,&gyro,&temp);            
                     int smallG = accel.acceleration.z * scalar; 
+                    //int smallG = 0;                    
                     sensorVal[i] = constrain(abs(smallG),0,highMap);
+
                     if(sensorVal[i] == highMap)
                     {
                         maxCount++;
+                        #ifdef debug
+                        Serial.println("Max updated");
+                        #endif
                     }
                     
                 }
 
+                #ifdef debug
+                Serial.println("checking Max Count");
+                #endif
                 //Checks to see to if any material is in if there is
                 //modify the data to lower impact.
                 if(maxCount != 4 && maxCount < 4)

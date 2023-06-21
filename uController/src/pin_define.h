@@ -32,5 +32,5 @@
 #define motorSpeed 100 //in RPM
 
 
-// #define debug
-// #define debugverbose
+//#define debug
+//#define debugverbose
