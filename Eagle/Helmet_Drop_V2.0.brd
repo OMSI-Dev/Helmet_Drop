@@ -249,7 +249,8 @@
 <text x="59.817" y="115.824" size="1.778" layer="25" rot="R180">GND</text>
 <text x="49.53" y="105.41" size="1.778" layer="25">Only Jump Data Pins 
 OR Ground Pins
-DO NOT CONNECT BOTH</text>
+DO NOT CONNECT BOTH
+Default should be DATA</text>
 <text x="19.05" y="31.75" size="1.778" layer="25" rot="R180">12V</text>
 <text x="102.362" y="77.978" size="2.1844" layer="25" rot="R180">24V</text>
 <text x="19.05" y="27.94" size="1.778" layer="25" rot="R180">24V</text>
