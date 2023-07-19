@@ -221,10 +221,17 @@ void hammerDrop()
                     Serial.print("check acceleration: ");
                     Serial.println(i);
                     #endif
+                    try{
                     dso32.getEvent(&accel,&gyro,&temp);            
                     int smallG = accel.acceleration.z * scalar; 
                     //int smallG = 0;                    
                     sensorVal[i] = constrain(abs(smallG),0,highMap);
+                    } catch(...)
+                    {
+                     #ifdef debug
+                     serial.println("Error in reading sensor");       
+                     #endif
+                    };
 
                     if(sensorVal[i] == highMap)
                     {
