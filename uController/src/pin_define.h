@@ -23,6 +23,7 @@
 #define doorLatchpin 6
 #define lockedLight 12
 #define unlockedLight 11
+#define homingSwitch 13
 
 #define motorStepPos 9
 #define motorStepNeg 5

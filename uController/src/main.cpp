@@ -44,6 +44,7 @@ bytes being sent or received:
 
 //Limit switch, used as a back safety for the reed switch.
 Bounce2::Button limitBtn = Bounce2::Button();
+Bounce2::Button homingBtn = Bounce2::Button();
 
 //may not use the change state varriables 
 int reedState      = 0;     // current state of the button
@@ -113,6 +114,11 @@ dso32.setAccelDataRate(LSM6DS_RATE_6_66K_HZ);
   limitBtn.attach(limitSwitch, INPUT_PULLUP);
   limitBtn.interval(5);
   limitBtn.setPressedState(LOW);
+
+  //backup homing
+  homingBtn.attach(homingSwitch, INPUT_PULLUP);
+  homingBtn.interval(5);
+  homingBtn.setPressedState(LOW);
 
   #ifdef debug
   Serial.println("Homing...");

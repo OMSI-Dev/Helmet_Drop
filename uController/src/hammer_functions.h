@@ -149,6 +149,25 @@ do
     }
 }
 
+void btnHome()
+{
+
+    do
+    {
+    hammerStep.step(homeSpeed);
+    homingBtn.update();
+    }while(homingBtn.isPressed());
+
+    hammerStep.step(200); 
+
+    do
+    {
+    hammerStep.step(-10);
+    homingBtn.update();
+    }while(homingBtn.isPressed());
+
+}
+
 void hammerDrop()
 {   
     maxCount = 0;
@@ -311,7 +330,8 @@ void hammerDrop()
             if(resetTimer.expired() && stallFlag == true)
             {
                 setOnce = false;
-                findHome(); 
+                findHome();
+                btnHome(); 
                #ifdef debug
                 Serial.println(" Resetting home");
                #endif            
