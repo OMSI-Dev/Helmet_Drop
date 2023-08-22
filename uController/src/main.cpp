@@ -73,6 +73,7 @@ void setup()
   pinMode(doorLatchpin, OUTPUT);
   pinMode(reedIn, INPUT_PULLUP); 
 
+  lockDoor(true);
 
   //start serial
   Serial.begin(115200);
