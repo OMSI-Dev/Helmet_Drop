@@ -1,5 +1,4 @@
-#include <pin_define.h>
-extern Bounce2::Button limitBtn;
+
 extern bool runOnce,sendFlag,doorStart,gameready;
 
 

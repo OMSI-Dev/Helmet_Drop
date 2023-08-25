@@ -42,9 +42,7 @@ bytes being sent or received:
 
 
 
-//Limit switch, used as a back safety for the reed switch.
-Bounce2::Button limitBtn = Bounce2::Button();
-Bounce2::Button homingBtn = Bounce2::Button();
+
 
 //may not use the change state varriables 
 int reedState      = 0;     // current state of the button
@@ -152,7 +150,7 @@ void loop()
 
   //Run the hammer drop routine if the door is shut
   //This also will start the sensor reading routine
-  #ifdef debug
+  #ifdef debugverbose
   Serial.print("doorShut: ");
   Serial.println(doorShut);
   #endif

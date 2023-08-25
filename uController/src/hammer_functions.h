@@ -1,5 +1,3 @@
-#include <pin_define.h> 
-
 int steps = 200;
 byte microstep = 4;
 Stepper hammerStep(steps * microstep, motorStepPos,motorStepNeg,motorDirPos, motorDirNeg);
@@ -8,6 +6,12 @@ byte driftCount;
 
 //Declare Accel
 Adafruit_LSM6DSO32 dso32;
+
+//Accel
+unsigned long startTime = 0;
+const unsigned long maxExecutionTime = 600; // Maximum execution time in milliseconds
+
+
 
 extern bool sendFlag, runOnce, gameready;
 int homeSpeed = -50; //how many steps to take each pass during homing
@@ -171,6 +175,7 @@ void btnHome()
 void hammerDrop()
 {   
     maxCount = 0;
+    byte errorCount = 0;
     //Lock the door and turn on/off the lights
     lockDoor(true);
     //used to read if the IR is sensing the arm    
@@ -228,39 +233,68 @@ void hammerDrop()
                 //SensorVal Array that gets sent to Processing for graphing
                 uint16_t arraySize = 200;        
                 int sensorVal[arraySize];
+                unsigned long startTime = millis();
 
+                do{
+                    for(byte i=0; i<=199; i++)
+                    {
+                    /*Currently all sensors need to be called 
+                    in order to get accel data*/
+                        sensors_event_t accel;
+                        sensors_event_t gyro;
+                        sensors_event_t temp;
+                        #ifdef debug
+                        Serial.print("check acceleration: ");
+                        Serial.println(i);
+                        #endif
+
+                        dso32.getEvent(&accel,&gyro,&temp);
+
+                        int smallG = accel.acceleration.z * scalar; 
+                        //int smallG = 0;                    
+                        sensorVal[i] = constrain(abs(smallG),0,highMap);                        
+
+
+                        if(sensorVal[i] == highMap)
+                        {
+                            maxCount++;
+                            #ifdef debug
+                            Serial.println("Max updated");
+                            #endif
+                        }
+                        //Serial.println((millis() - startTime));
+                    }
+               }while((millis() - startTime) < maxExecutionTime);
+
+
+                //check for a full array incase it left early
                 for(byte i=0; i<=199; i++)
                 {
-                /*Currently all sensors need to be called 
-                in order to get accel data*/
-                    sensors_event_t accel;
-                    sensors_event_t gyro;
-                    sensors_event_t temp;
-                    #ifdef debug
-                    Serial.print("check acceleration: ");
-                    Serial.println(i);
-                    #endif
-                    try{
-                    dso32.getEvent(&accel,&gyro,&temp);            
-                    int smallG = accel.acceleration.z * scalar; 
-                    //int smallG = 0;                    
-                    sensorVal[i] = constrain(abs(smallG),0,highMap);
-                    } catch(...)
+                    if(sensorVal[i] == 0)
                     {
-                     #ifdef debug
-                     serial.println("Error in reading sensor");       
-                     #endif
-                    };
-
-                    if(sensorVal[i] == highMap)
-                    {
-                        maxCount++;
+                        errorCount++;                        
                         #ifdef debug
-                        Serial.println("Max updated");
-                        #endif
-                    }
-                    
+                        Serial.print("Error in reading sensor @ pos: ");  
+                        Serial.println(i);
+                        #endif 
+                    }                     
                 }
+                #ifdef debug
+                Serial.print("Amount of errors: ");  
+                Serial.println(errorCount);
+                #endif 
+                if(errorCount >= 150)
+                {
+                    for(byte i=0; i<=199; i++)
+                    {
+                        sensorVal[i] = 20;                       
+                        #ifdef debug
+                        Serial.print("updating array foir error correction");  
+                        Serial.println(i);
+                        #endif 
+                    }                     
+                }
+                   
 
                 #ifdef debug
                 Serial.println("checking Max Count");
@@ -307,7 +341,15 @@ void hammerDrop()
                 hammerStep.setSpeed(motorSpeed);
                 //homepos: 6410
                 //drop: 500
-                hammerStep.step(homepos - drop);                
+                hammerStep.step(homepos - drop); 
+
+                //reset sensor for clearing
+                dso32.reset();
+                //Sets accelerometer Range
+                dso32.setAccelRange(LSM6DSO32_ACCEL_RANGE_32_G);
+                //Sets accelerometer Data Rate
+                dso32.setAccelDataRate(LSM6DS_RATE_6_66K_HZ);
+
                 lockDoor(false);
                 stallFlag = false;
                 Serial.write(64);

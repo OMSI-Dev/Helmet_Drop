@@ -84,9 +84,9 @@ The images are saved as PNG and the video is MP4, both are stored /data/images. 
 
 ##### Naming scheme:
 
-	Arrow Failure: redArrow.png
-	Arrow Average: yellowArrow.mp3
-	Arrow Success: greenArrow.mp3
+	Arrow Failure: redArrow.gif
+	Arrow Average: yellowArrow.gif
+	Arrow Success: greenArrow.gif
 	Head Failure: 3_en.png
 	Head Average:  2_en.png
 	Head Success:  1_en.png

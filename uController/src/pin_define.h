@@ -2,7 +2,7 @@
 // Reed - D4
 // Limit Switch - D0
 // Motor Dir - D10
-// Motor Step - D9
+/// Motor Step - D9
 // Motor Dir(-) - D5 OR GND
 // Motor Step(-) - D7 OR GND
 // Motor En - D1
@@ -31,6 +31,10 @@
 #define motorDirNeg 7
 #define motorEnb 1
 #define motorSpeed 100 //in RPM
+
+//Limit switch, used as a back safety for the reed switch.
+Bounce2::Button limitBtn = Bounce2::Button();
+Bounce2::Button homingBtn = Bounce2::Button();
 
 
 //#define debug
