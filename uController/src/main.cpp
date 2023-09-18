@@ -168,8 +168,7 @@ void loop()
       
     }
 
-
-
+    //signals to start sending data
     if(buf[0] == 33)
     {
       buf[0] = 0;
@@ -189,7 +188,9 @@ void loop()
     }
   }
 
-    if(buf[0] == 37)
+  //Singals that the timer is over and the game is over
+  //this also acts as a reset
+  if(buf[0] == 37)
   {
     buf[0] = 0;  
     gameready = false; 
