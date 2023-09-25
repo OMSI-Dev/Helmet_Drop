@@ -54,6 +54,7 @@ int lastReedState  = 0;     // previous state of the button
 int ByteRecv, ByteSend = 0; 
 bool gameready = false;
 
+//Serial read variables
 const int BUFFER_SIZE = 1;
 byte buf[BUFFER_SIZE];
 
