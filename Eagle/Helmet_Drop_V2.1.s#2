@@ -7984,9 +7984,25 @@ Mag Lock - D6</text>
 <wire x1="43.18" y1="132.08" x2="48.26" y2="132.08" width="0.1524" layer="91"/>
 <pinref part="U1" gate="G$1" pin="5V"/>
 <wire x1="48.26" y1="132.08" x2="50.8" y2="132.08" width="0.1524" layer="91"/>
-<wire x1="48.26" y1="160.02" x2="81.28" y2="160.02" width="0.1524" layer="91"/>
+<wire x1="48.26" y1="160.02" x2="58.42" y2="160.02" width="0.1524" layer="91"/>
 <wire x1="48.26" y1="132.08" x2="48.26" y2="160.02" width="0.1524" layer="91"/>
 <junction x="48.26" y="132.08"/>
+<wire x1="81.28" y1="160.02" x2="58.42" y2="160.02" width="0.1524" layer="91"/>
+<wire x1="58.42" y1="160.02" x2="58.42" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="58.42" y1="50.8" x2="119.38" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="119.38" y1="50.8" x2="119.38" y2="66.04" width="0.1524" layer="91"/>
+<pinref part="P+4" gate="VCC" pin="VCC"/>
+<pinref part="JP2" gate="A" pin="1"/>
+<wire x1="121.92" y1="76.2" x2="129.54" y2="76.2" width="0.1524" layer="91"/>
+<wire x1="129.54" y1="76.2" x2="129.54" y2="66.04" width="0.1524" layer="91"/>
+<wire x1="129.54" y1="66.04" x2="129.54" y2="63.5" width="0.1524" layer="91"/>
+<wire x1="129.54" y1="63.5" x2="129.54" y2="60.96" width="0.1524" layer="91"/>
+<pinref part="JMP3" gate="-0R" pin="1"/>
+<wire x1="137.16" y1="60.96" x2="137.16" y2="63.5" width="0.1524" layer="91"/>
+<wire x1="137.16" y1="63.5" x2="129.54" y2="63.5" width="0.1524" layer="91"/>
+<junction x="129.54" y="63.5"/>
+<wire x1="119.38" y1="66.04" x2="129.54" y2="66.04" width="0.1524" layer="91"/>
+<junction x="129.54" y="66.04"/>
 </segment>
 <segment>
 <pinref part="SUPPLY1" gate="G$1" pin="5V"/>
@@ -8232,19 +8248,6 @@ Mag Lock - D6</text>
 <pinref part="X2" gate="-1" pin="1"/>
 <wire x1="121.92" y1="83.82" x2="154.94" y2="83.82" width="0.1524" layer="91"/>
 <junction x="154.94" y="83.82"/>
-</segment>
-</net>
-<net name="VCC" class="1">
-<segment>
-<pinref part="P+4" gate="VCC" pin="VCC"/>
-<pinref part="JP2" gate="A" pin="1"/>
-<wire x1="121.92" y1="76.2" x2="129.54" y2="76.2" width="0.1524" layer="91"/>
-<wire x1="129.54" y1="76.2" x2="129.54" y2="63.5" width="0.1524" layer="91"/>
-<wire x1="129.54" y1="63.5" x2="129.54" y2="60.96" width="0.1524" layer="91"/>
-<pinref part="JMP3" gate="-0R" pin="1"/>
-<wire x1="137.16" y1="60.96" x2="137.16" y2="63.5" width="0.1524" layer="91"/>
-<wire x1="137.16" y1="63.5" x2="129.54" y2="63.5" width="0.1524" layer="91"/>
-<junction x="129.54" y="63.5"/>
 </segment>
 </net>
 <net name="EN" class="2">
